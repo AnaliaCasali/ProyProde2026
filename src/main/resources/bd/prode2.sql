@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `prode`.`Usuarios` (
   `idUsuario` INT NOT NULL AUTO_INCREMENT,
   `password` VARCHAR(255) NOT NULL,
   `email` VARCHAR(100) NOT NULL UNIQUE, -- Añadido UNIQUE para evitar correos duplicados
+  `tipo` VARCHAR(100) NOT NULL, -- Para definir tipo de usuario
   `curso` VARCHAR(45) NOT NULL,
   `carrera` VARCHAR(45) NOT NULL, -- TSDE, LENGUA, etc.
   `nombreGrupo` VARCHAR(45) NULL,

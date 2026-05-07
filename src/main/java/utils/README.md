@@ -1,1 +1,0 @@
-# ProyProde2026

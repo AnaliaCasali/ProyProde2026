@@ -1,0 +1,195 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
+
+:root {
+  --afa-celeste: #74acdf;
+  --afa-blanco: #ffffff;
+  --afa-amarillo: #f1b32d;
+  --afa-azul-oscuro: #1b365d;
+  --bg-principal: #e9ecef;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  background-color: var(--bg-principal) !important;
+  color: #2c3e50;
+  margin: 0;
+  /* Espacio extra abajo en mobile para que la nav no tape el contenido */
+  padding-bottom: 80px;
+}
+
+/* En PC quitamos el padding del body */
+@media (min-width: 992px) {
+  body {
+    padding-bottom: 0;
+  }
+}
+
+/* --- HEADER --- */
+.navbar-afa {
+  background-color: var(--afa-azul-oscuro) !important;
+  min-height: 70px;
+}
+
+.logo-fifa {
+  height: 45px;
+  filter: brightness(0) invert(1); /* Lo hace blanco para que resalte */
+}
+
+.logo-afa {
+  height: 40px;
+  margin-left: 10px;
+}
+
+/* Alineación dinámica del Header */
+@media (min-width: 992px) {
+  .navbar-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .navbar-brand-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-toggler {
+    order: 3; /* Botón hamburguesa a la derecha en PC */
+  }
+}
+
+/* --- NAVEGACIÓN MOBILE (TAB BAR) --- */
+.mobile-nav {
+  display: none; /* Oculto en PC */
+}
+
+@media (max-width: 991px) {
+  .navbar-toggler {
+    display: none !important; /* Desaparece hamburguesa en mobile */
+  }
+
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: var(--afa-blanco);
+    justify-content: space-around;
+    padding: 10px 0;
+    border-top: 2px solid var(--afa-celeste);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1030;
+  }
+
+  .mobile-nav a {
+    text-decoration: none;
+    color: #888;
+    font-size: 0.65rem;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .mobile-nav a.active {
+    color: var(--afa-azul-oscuro);
+  }
+
+  .mobile-nav i {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 2px;
+  }
+}
+
+/* --- CAPSULAS --- */
+.capsula-prode {
+  background-color: var(--afa-blanco);
+  border-radius: 50px;
+  border: 1px solid rgba(116, 172, 223, 0.4);
+  padding: 15px 25px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.equipo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.versus {
+  flex: 1;
+  text-align: center;
+}
+
+/* --- BIENVENIDA --- */
+.hero-inicio {
+  background: linear-gradient(
+    180deg,
+    var(--afa-celeste) 0%,
+    var(--bg-principal) 100%
+  );
+  padding: 40px 15px;
+  text-align: center;
+  border-radius: 0 0 40px 40px;
+}
+
+.countdown-box {
+  background-color: var(--afa-azul-oscuro);
+  color: var(--afa-amarillo);
+  padding: 10px 30px;
+  border-radius: 15px;
+  display: inline-block;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+/* --- BOTONES --- */
+.btn-afa {
+  background-color: var(--afa-amarillo) !important;
+  color: var(--afa-azul-oscuro) !important;
+  font-weight: bold;
+  border-radius: 50px;
+  padding: 10px 30px;
+}
+
+/* --- ESTILOS PARA EL RANKING EN INICIO --- */
+.puesto-1 {
+  border-left: 5px solid #ffd700 !important;
+} /* Oro */
+.puesto-2 {
+  border-left: 5px solid #c0c0c0 !important;
+} /* Plata */
+.puesto-3 {
+  border-left: 5px solid #cd7f32 !important;
+} /* Bronce */
+
+.puntos-badge {
+  background-color: var(--afa-azul-oscuro);
+  color: var(--afa-amarillo);
+  border-radius: 10px;
+  padding: 5px 12px;
+  font-weight: bold;
+}
+
+.nombre-usuario {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px; /* Ajustá este valor según qué tan largo querés el corte */
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* En PC le damos más aire al nombre */
+@media (min-width: 992px) {
+  .nombre-usuario {
+    max-width: 300px;
+  }
+}

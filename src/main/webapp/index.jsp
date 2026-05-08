@@ -351,7 +351,7 @@
         <i class="bi bi-trophy"></i>
         <span>Ranking</span>
       </a>
-      <a href="#">
+      <a href="como-jugar">
         <i class="bi bi-file-text"></i>
         <span>Reglas</span>
       </a>

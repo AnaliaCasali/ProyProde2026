@@ -35,6 +35,10 @@ public class Usuarios {
     return idUsuario;
   }
 
+  public void setIdUsuario(int idUsuario) {
+    this.idUsuario = idUsuario;
+  } // Se agrega setter de idUsuario por problemas en JugadaDAO a la hora de mapear los datos en el rs
+
   public String getEmail() {
     return email;
   }

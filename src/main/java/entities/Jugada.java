@@ -1,85 +1,99 @@
 package entities;
 
-
 import java.util.Objects;
 
 public class Jugada {
-    private int idJugada;
-    private int idUsuario;
-    private int idPartido;
-    private int golesLocal;
-    private int golesVisitante;
-    private int puntaje;
+  private int idJugada;
+  private Usuarios usuario;
+  private Partido partido;
+  private int golesLocal;
+  private int golesVisitante;
+  private int puntaje;
 
-    public int getIdJugada() {
-        return idJugada;
-    }
+  public Jugada() {
+  }
 
-    public void setIdJugada(int idJugada) {
-        this.idJugada = idJugada;
-    }
+  public Jugada (int idJugada, Usuarios usuario, Partido partido, int golesLocal, int golesVisitante, int puntaje) {
+    this.idJugada = idJugada;
+    this.usuario = usuario;
+    this.partido = partido;
+    this.golesLocal = golesLocal;
+    this.golesVisitante = golesVisitante;
+    this.puntaje = puntaje;
+  }
 
-    public int getIdUsuario() {
-        return idUsuario;
-    }
+  public int getIdJugada() {
+    return idJugada;
+  }
 
-    public void setIdUsuario(int idUsuario) {
-        this.idUsuario = idUsuario;
-    }
+  public void setIdJugada(int idJugada) {
+    this.idJugada = idJugada;
+  }
 
-    public int getIdPartido() {
-        return idPartido;
-    }
+  public Usuarios getUsuario() {
+    return usuario;
+  }
 
-    public void setIdPartido(int idPartido) {
-        this.idPartido = idPartido;
-    }
+  public void setUsuario(Usuarios usuario) {
+    this.usuario = usuario;
+  }
 
-    public int getGolesLocal() {
-        return golesLocal;
-    }
+  public Partido getPartido() {
+    return partido;
+  }
 
-    public void setGolesLocal(int golesLocal) {
-        this.golesLocal = golesLocal;
-    }
+  public void setPartido(Partido partido) {
+    this.partido = partido;
+  }
 
-    public int getGolesVisitante() {
-        return golesVisitante;
-    }
+  public int getGolesLocal() {
+    return golesLocal;
+  }
 
-    public void setGolesVisitante(int golesVisitante) {
-        this.golesVisitante = golesVisitante;
-    }
+  public void setGolesLocal(int golesLocal) {
+    this.golesLocal = golesLocal;
+  }
 
-    public int getPuntaje() {
-        return puntaje;
-    }
+  public int getGolesVisitante() {
+    return golesVisitante;
+  }
 
-    public void setPuntaje(int puntaje) {
-        this.puntaje = puntaje;
-    }
+  public void setGolesVisitante(int golesVisitante) {
+    this.golesVisitante = golesVisitante;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        Jugada jugada = (Jugada) o;
-        return idJugada == jugada.idJugada && idUsuario == jugada.idUsuario && idPartido == jugada.idPartido && golesLocal == jugada.golesLocal && golesVisitante == jugada.golesVisitante && puntaje == jugada.puntaje;
-    }
+  public int getPuntaje() {
+    return puntaje;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(idJugada, idUsuario, idPartido, golesLocal, golesVisitante, puntaje);
-    }
+  public void setPuntaje(int puntaje) {
+    this.puntaje = puntaje;
+  }
 
-    @Override
-    public String toString() {
-        return "Jugada{" +
-                "idJugada=" + idJugada +
-                ", idUsuario=" + idUsuario +
-                ", idPartido=" + idPartido +
-                ", golesLocal=" + golesLocal +
-                ", golesVisitante=" + golesVisitante +
-                ", puntaje=" + puntaje +
-                '}';
-    }
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Jugada jugada = (Jugada) o;
+    return idJugada == jugada.idJugada &&
+        Objects.equals(usuario, jugada.usuario) &&
+        Objects.equals(partido, jugada.partido);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(idJugada, usuario, partido);
+  }
+
+  @Override
+  public String toString() {
+    return "Jugada{" +
+        "idJugada=" + idJugada +
+        ", usuario=" + (usuario != null ? usuario.getIdUsuario() : "null") +
+        ", partido=" + (partido != null ? partido.getIdPartido() : "null") +
+        ", golesLocal=" + golesLocal +
+        ", golesVisitante=" + golesVisitante +
+        ", puntaje=" + puntaje +
+        '}';
+  }
 }

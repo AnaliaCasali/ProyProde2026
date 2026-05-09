@@ -1,25 +1,27 @@
 package entities;
 
 public class etapas {
-  private int id;
+  private int idEtapa;
   private String nombreEtapa;
 
+  //Cree el constructor vacio para poder usarlo en PartidoDAO
+  public etapas() {}
 
-  public etapas(int id) {
-    this.id = id;
+  public etapas(int idEtapa) {
+    this.idEtapa = idEtapa;
   }
 
-  public etapas(int id, String nombreEtapa) {
-    this.id = id;
+  public etapas(int idEtapa, String nombreEtapa) {
+    this.idEtapa = idEtapa;
     this.nombreEtapa = nombreEtapa;
   }
 
-  public int getId() {
-    return id;
+  public int getIdEtapa() {
+    return idEtapa;
   }
 
-  public void setId(int id) {
-    this.id = id;
+  public void setIdEtapa(int idEtapa) {
+    this.idEtapa = idEtapa;
   }
 
   public String getNombreEtapa() {
@@ -33,7 +35,7 @@ public class etapas {
   @Override
   public String toString() {
     return "etapas{" +
-        "id=" + id +
+        "id=" + idEtapa +
         ", nombreEtapa='" + nombreEtapa + '\'' +
         '}';
   }

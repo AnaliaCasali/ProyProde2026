@@ -1,24 +1,27 @@
 package entities;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Partido {
     private int idPartido;
-    private String equipolocal;
-    private String equipoVisitante;
-    //private Etapa etapa;
-    //private Estadio estadio;
-    private Date fechaHora;
+    private Equipo equipoLocal;
+    private Equipo equipoVisitante;
+    private etapas etapa;
+    private Estadio estadio;
+    private LocalDateTime fechaHora;
     private int golesLocal;
     private int golesVisitante;
     private boolean finalizado;
 
 
-    //Se crea el constructor y se lo deja comentado debido a que no dispongo de las demas entidades.
-    /*public Partido(int idPartido, String equipolocal, String equipoVisitante, Etapa etapa, Estadio estadio, Date fechaHora, int golesLocal, int golesVisitante, boolean finalizado) {
+    //Constructor vacío.
+    public Partido() {}
+
+    //Constructor con todos los parametros
+    public Partido(int idPartido, Equipo equipoLocal, Equipo equipoVisitante, etapas etapa, Estadio estadio, LocalDateTime fechaHora, int golesLocal, int golesVisitante, boolean finalizado) {
         this.idPartido = idPartido;
-        this.equipolocal = equipolocal;
+        this.equipoLocal = equipoLocal;
         this.equipoVisitante = equipoVisitante;
         this.etapa = etapa;
         this.estadio = estadio;
@@ -27,22 +30,25 @@ public class Partido {
         this.golesVisitante = golesVisitante;
         this.finalizado = finalizado;
     }
-     */
 
-    //GET
+    //GETT
     public int getIdPartido() {return idPartido;}
-    public String getEquipolocal() {return equipolocal;}
-    public String getEquipoVisitante() {return equipoVisitante;}
-    public Date getFechaHora() {return fechaHora;}
+    public Equipo getEquipoLocal() {return equipoLocal;}
+    public Equipo getEquipoVisitante() {return equipoVisitante;}
+    public etapas getEtapa() {return etapa;}
+    public Estadio getEstadio() {return estadio;}
+    public LocalDateTime getFechaHora() {return fechaHora;}
     public int getGolesLocal() {return golesLocal;}
     public int getGolesVisitante() {return golesVisitante;}
     public boolean isFinalizado() {return finalizado;}
 
     //SETT
     public void setIdPartido(int idPartido) {this.idPartido = idPartido;}
-    public void setEquipolocal(String equipolocal) {this.equipolocal = equipolocal;}
-    public void setEquipoVisitante(String equipoVisitante) {this.equipoVisitante = equipoVisitante;}
-    public void setFechaHora(Date fechaHora) {this.fechaHora = fechaHora;}
+    public void setEquipoLocal(Equipo equipoLocal) {this.equipoLocal = equipoLocal;}
+    public void setEquipoVisitante(Equipo equipoVisitante) {this.equipoVisitante = equipoVisitante;}
+    public void setEtapa(etapas etapa) {this.etapa = etapa;}
+    public void setEstadio(Estadio estadio) {this.estadio = estadio;}
+    public void setFechaHora(LocalDateTime fechaHora) {this.fechaHora = fechaHora;}
     public void setGolesLocal(int golesLocal) {this.golesLocal = golesLocal;}
     public void setGolesVisitante(int golesVisitante) {this.golesVisitante = golesVisitante;}
     public void setFinalizado(boolean finalizado) {this.finalizado = finalizado;}
@@ -51,8 +57,10 @@ public class Partido {
     public String toString() {
         return "Partido{" +
                 "idPartido=" + idPartido +
-                ", equipolocal='" + equipolocal + '\'' +
-                ", equipoVisitante='" + equipoVisitante + '\'' +
+                ", equipolocal=" + equipoLocal +
+                ", equipoVisitante=" + equipoVisitante +
+                ", etapa=" + etapa +
+                ", estadio=" + estadio +
                 ", fechaHora=" + fechaHora +
                 ", golesLocal=" + golesLocal +
                 ", golesVisitante=" + golesVisitante +
@@ -64,13 +72,11 @@ public class Partido {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Partido partido = (Partido) o;
-        return idPartido == partido.idPartido && golesLocal == partido.golesLocal && golesVisitante == partido.golesVisitante && Objects.equals(equipolocal, partido.equipolocal) && Objects.equals(equipoVisitante, partido.equipoVisitante) && Objects.equals(fechaHora, partido.fechaHora) && finalizado == partido.finalizado;
+        return idPartido == partido.idPartido && golesLocal == partido.golesLocal && golesVisitante == partido.golesVisitante && finalizado == partido.finalizado && Objects.equals(equipoLocal, partido.equipoLocal) && Objects.equals(equipoVisitante, partido.equipoVisitante) && Objects.equals(etapa, partido.etapa) && Objects.equals(estadio, partido.estadio) && Objects.equals(fechaHora, partido.fechaHora);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idPartido, equipolocal, equipoVisitante, fechaHora, golesLocal, golesVisitante, finalizado);
+        return Objects.hash(idPartido, equipoLocal, equipoVisitante, etapa, estadio, fechaHora, golesLocal, golesVisitante, finalizado);
     }
-
-
 }

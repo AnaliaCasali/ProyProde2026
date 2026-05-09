@@ -2,7 +2,9 @@ package entities;
 
 import enums.TipoUsuario;
 
-public class Usuarios {
+import java.util.Objects;
+
+public class Usuarios implements Comparable {
   private int idUsuario;
   private String email;
   private String password;
@@ -12,7 +14,6 @@ public class Usuarios {
   private String nombreGrupo;
 
   public Usuarios() {
-
   }
 
   public Usuarios(String email, String password, String curso, String carrera, String nombreGrupo) {
@@ -35,6 +36,10 @@ public class Usuarios {
     return idUsuario;
   }
 
+  public void setIdUsuario(int idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
   public String getEmail() {
     return email;
   }
@@ -49,6 +54,14 @@ public class Usuarios {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public TipoUsuario getTipo() {
+    return tipo;
+  }
+
+  public void setTipo(TipoUsuario tipo) {
+    this.tipo = tipo;
   }
 
   public String getCurso() {
@@ -76,12 +89,28 @@ public class Usuarios {
   }
 
   // métodos
-  // tostring
+  // equals y hashcode solo para email - idUsuario
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    Usuarios otro = (Usuarios) o;
+    return idUsuario == otro.idUsuario &&
+        Objects.equals(email, otro.email);
+  }
 
-  // equals
+  @Override
+  public int hashCode() {
+    return Objects.hash(idUsuario, email);
+  }
 
-  // hashcode
+  @Override
+  public int compareTo(Object o) {
+    Usuarios otro = (Usuarios) o;
+    int comparacionEmail = this.email.compareTo(otro.email);
 
-  // compare/comparable
+    if (comparacionEmail != 0)
+      return comparacionEmail;
 
+    return this.password.compareTo(otro.password);
+  }
 }

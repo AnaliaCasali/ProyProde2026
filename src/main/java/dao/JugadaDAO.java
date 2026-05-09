@@ -21,33 +21,34 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
       "UPDATE Jugadas SET golesLocal = ?, golesVisitante = ? WHERE idJugada = ?";
   private static final String SQL_DELETE =
       "DELETE FROM Jugadas WHERE idJugada = ?";
+
+  // CORRECCIÓN: Se agregó p.fechaHora para poder bloquear la edición según el Escenario 3
   private static final String SQL_GETALL =
       "SELECT j.idJugada, j.idUsuario, j.idPartido, j.golesLocal, j.golesVisitante, j.puntaje, " +
-          "el.nombre AS nombreLocal, ev.nombre AS nombreVisitante " +
+          "el.nombre AS nombreLocal, ev.nombre AS nombreVisitante, p.fechaHora " +
           "FROM Jugadas j " +
           "INNER JOIN Partidos p ON j.idPartido = p.idPartido " +
           "INNER JOIN Equipos el ON p.equipoLocal = el.idEquipo " +
           "INNER JOIN Equipos ev ON p.equipoVisitante = ev.idEquipo";
+
   private static final String SQL_GETBYID =
       SQL_GETALL + " WHERE j.idJugada = ?";
-  //EXISTBYID: Usamos 1 en lugar de * para que el motor de la BD no procese columnas.
+
   private static final String SQL_EXISTBYID =
       "SELECT 1 FROM Jugadas WHERE idJugada = ? LIMIT 1";
 
-  // SUM_PUNTOS: Obtiene la suma total de puntos de un usuario específico.
   private static final String SQL_GET_TOTAL_PUNTOS =
       "SELECT SUM(puntaje) FROM Jugadas WHERE idUsuario = ?";
-  // GET_BY_USER_AND_MATCH: Busca una jugada específica para saber si existe previamente.
-  //Reutilizamos SQL_GETALL para tener los nombres de los equipos disponibles.
+
   private static final String SQL_GET_BY_USER_AND_MATCH =
       SQL_GETALL + " WHERE j.idUsuario = ? AND j.idPartido = ?";
-  // GET_BY_ETAPA: Filtra las jugadas del usuario por una jornada/etapa específica.
+
   private static final String SQL_GET_BY_ETAPA =
       SQL_GETALL + " WHERE j.idUsuario = ? AND p.idEtapa = ?";
 
   @Override
   public List<Jugada> getAll() {
-    List<Jugada> lista = new ArrayList<>(); // Lista local para evitar acumulación de datos
+    List<Jugada> lista = new ArrayList<>();
     try (Connection conn = obtenerConexion();
          PreparedStatement ps = conn.prepareStatement(SQL_GETALL);
          ResultSet rs = ps.executeQuery()) {
@@ -56,16 +57,19 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
         Jugada j = new Jugada();
         j.setIdJugada(rs.getInt("idJugada"));
 
-        // Mapeo de Usuario
         Usuarios u = new Usuarios();
         u.setIdUsuario(rs.getInt("idUsuario"));
         j.setUsuario(u);
 
-        // Mapeo de Partido con nombres de equipos
         Partido p = new Partido();
         p.setIdPartido(rs.getInt("idPartido"));
         p.setEquipolocal(rs.getString("nombreLocal"));
         p.setEquipoVisitante(rs.getString("nombreVisitante"));
+
+        // CORRECCIÓN: Mapeo del DATETIME a LocalDateTime
+        if (rs.getTimestamp("fechaHora") != null) {
+          p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+        }
         j.setPartido(p);
 
         j.setGolesLocal(rs.getInt("golesLocal"));
@@ -162,6 +166,10 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
           p.setIdPartido(rs.getInt("idPartido"));
           p.setEquipolocal(rs.getString("nombreLocal"));
           p.setEquipoVisitante(rs.getString("nombreVisitante"));
+
+          if (rs.getTimestamp("fechaHora") != null) {
+            p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+          }
           jugada.setPartido(p);
 
           jugada.setGolesLocal(rs.getInt("golesLocal"));
@@ -182,7 +190,7 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
       ps.setInt(1, id);
       try (ResultSet rs = ps.executeQuery()) {
-        return rs.next(); // Con 'SELECT 1' y 'LIMIT 1', si hay un registro, rs.next() es true.
+        return rs.next();
       }
     } catch (SQLException e) {
       throw new JugadaException("Error al verificar existencia de la jugada", e);
@@ -197,7 +205,7 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          return rs.getInt(1); // Retorna la suma del campo puntaje
+          return rs.getInt(1);
         }
       }
     } catch (SQLException e) {
@@ -227,6 +235,10 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
           p.setIdPartido(rs.getInt("idPartido"));
           p.setEquipolocal(rs.getString("nombreLocal"));
           p.setEquipoVisitante(rs.getString("nombreVisitante"));
+
+          if (rs.getTimestamp("fechaHora") != null) {
+            p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+          }
           jugada.setPartido(p);
 
           jugada.setGolesLocal(rs.getInt("golesLocal"));
@@ -261,6 +273,10 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
           p.setIdPartido(rs.getInt("idPartido"));
           p.setEquipolocal(rs.getString("nombreLocal"));
           p.setEquipoVisitante(rs.getString("nombreVisitante"));
+
+          if (rs.getTimestamp("fechaHora") != null) {
+            p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+          }
           j.setPartido(p);
 
           j.setGolesLocal(rs.getInt("golesLocal"));

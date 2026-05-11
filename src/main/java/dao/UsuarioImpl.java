@@ -1,6 +1,6 @@
 package dao;
 
-import entities.Usuarios;
+import entities.Usuario;
 import enums.TipoUsuario;
 import interfaces.AdmConexion;
 import interfaces.DAO;
@@ -13,7 +13,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuarioImpl implements DAO<Usuarios, Integer>, AdmConexion {
+public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
   private Connection conn = null;
 
   // CONSULTAS SQL
@@ -44,20 +44,20 @@ public class UsuarioImpl implements DAO<Usuarios, Integer>, AdmConexion {
 
   // métodos DAO
   @Override
-  public List<Usuarios> getAll() {
+  public List<Usuario> getAll() {
     conn = obtenerConexion();
 
     PreparedStatement pst = null;
     ResultSet rs = null;
 
-    List<Usuarios> listaUsuarios = new ArrayList<>();
+    List<Usuario> listaUsuarios = new ArrayList<>();
 
     try {
       pst = conn.prepareStatement(SQL_GETALL);
       rs = pst.executeQuery();
 
       while (rs.next()) {
-        Usuarios usuario = new Usuarios();
+        Usuario usuario = new Usuario();
         usuario.setIdUsuario(rs.getInt("idUsuario"));
         usuario.setEmail(rs.getString("email"));
         usuario.setPassword(rs.getString("password"));
@@ -80,8 +80,8 @@ public class UsuarioImpl implements DAO<Usuarios, Integer>, AdmConexion {
   }
 
   @Override
-  public void insert(Usuarios objeto) {
-    Usuarios usuario = objeto;
+  public void insert(Usuario objeto) {
+    Usuario usuario = objeto;
     conn = obtenerConexion();
 
     PreparedStatement pst = null;
@@ -113,8 +113,8 @@ public class UsuarioImpl implements DAO<Usuarios, Integer>, AdmConexion {
   }
 
   @Override
-  public void update(Usuarios objeto) {
-    Usuarios usuario = new Usuarios();
+  public void update(Usuario objeto) {
+    Usuario usuario = new Usuario();
 
     if (this.existsById(usuario.getIdUsuario())) {
       conn = obtenerConexion();
@@ -172,12 +172,12 @@ public class UsuarioImpl implements DAO<Usuarios, Integer>, AdmConexion {
   }
 
   @Override
-  public Usuarios getById(Integer id) {
+  public Usuario getById(Integer id) {
     conn = obtenerConexion();
 
     PreparedStatement pst = null;
     ResultSet rs = null;
-    Usuarios usuario = null;
+    Usuario usuario = null;
 
     try {
       pst = conn.prepareStatement(SQL_GETBYID);
@@ -185,7 +185,7 @@ public class UsuarioImpl implements DAO<Usuarios, Integer>, AdmConexion {
       rs = pst.executeQuery();
 
       if (rs.next()) {
-        usuario = new Usuarios();
+        usuario = new Usuario();
         usuario.setIdUsuario(rs.getInt("idUsuario"));
         usuario.setEmail(rs.getString("email"));
         usuario.setPassword(rs.getString("password"));
@@ -232,12 +232,12 @@ public class UsuarioImpl implements DAO<Usuarios, Integer>, AdmConexion {
     return existe;
   }
 
-  public Usuarios getByEmail(String id) {
+  public Usuario getByEmail(String id) {
     conn = obtenerConexion();
 
     PreparedStatement psBuscar = null;
     ResultSet rs = null;
-    Usuarios usuario = null;
+    Usuario usuario = null;
 
     try {
       psBuscar = conn.prepareStatement(SQL_GETBYEMAIL);
@@ -245,7 +245,7 @@ public class UsuarioImpl implements DAO<Usuarios, Integer>, AdmConexion {
       rs = psBuscar.executeQuery();
 
       if (rs.next()) {
-        usuario = new Usuarios();
+        usuario = new Usuario();
         usuario.setIdUsuario(rs.getInt("idUsuario"));
         usuario.setEmail(rs.getString("email"));
         usuario.setPassword(rs.getString("password"));

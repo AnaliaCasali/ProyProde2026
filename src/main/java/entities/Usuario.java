@@ -4,7 +4,7 @@ import enums.TipoUsuario;
 
 import java.util.Objects;
 
-public class Usuarios implements Comparable {
+public class Usuario implements Comparable {
   private int idUsuario;
   private String email;
   private String password;
@@ -13,10 +13,10 @@ public class Usuarios implements Comparable {
   private String carrera;
   private String nombreGrupo;
 
-  public Usuarios() {
+  public Usuario() {
   }
 
-  public Usuarios(String email, String password, String curso, String carrera, String nombreGrupo) {
+  public Usuario(String email, String password, String curso, String carrera, String nombreGrupo) {
     this.email = email;
     this.password = password;
     this.curso = curso;
@@ -24,7 +24,7 @@ public class Usuarios implements Comparable {
     this.nombreGrupo = nombreGrupo;
   }
 
-  public Usuarios(String email, String password, TipoUsuario tipo, String curso, String carrera) {
+  public Usuario(String email, String password, TipoUsuario tipo, String curso, String carrera) {
     this.email = email;
     this.password = password;
     this.tipo = tipo;
@@ -93,7 +93,7 @@ public class Usuarios implements Comparable {
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
-    Usuarios otro = (Usuarios) o;
+    Usuario otro = (Usuario) o;
     return idUsuario == otro.idUsuario &&
         Objects.equals(email, otro.email);
   }
@@ -105,7 +105,7 @@ public class Usuarios implements Comparable {
 
   @Override
   public int compareTo(Object o) {
-    Usuarios otro = (Usuarios) o;
+    Usuario otro = (Usuario) o;
     int comparacionEmail = this.email.compareTo(otro.email);
 
     if (comparacionEmail != 0)

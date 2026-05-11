@@ -1,7 +1,7 @@
 package servlets;
 
 import dao.UsuarioImpl;
-import entities.Usuarios;
+import entities.Usuario;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -18,7 +18,7 @@ public class ServletSesion extends HttpServlet {
 
   private UsuarioImpl usuarioDAO = new UsuarioImpl();
   // hashmap para almacenar los usuarios con sesion iniciada
-  private static Map<String, Usuarios> usuariosActivos = new HashMap<>();
+  private static Map<String, Usuario> usuariosActivos = new HashMap<>();
 
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     String parametroLogout = req.getParameter("cerrarSesion");
@@ -52,7 +52,7 @@ public class ServletSesion extends HttpServlet {
     HttpSession session = req.getSession(false);
 
     if (session != null) {
-      Usuarios usuario = (Usuarios) session.getAttribute("usuario");
+      Usuario usuario = (Usuario) session.getAttribute("usuario");
       if (usuario != null) {
         usuariosActivos.remove(usuario.getEmail());
       }
@@ -78,7 +78,7 @@ public class ServletSesion extends HttpServlet {
       return "formLogin.jsp";
     }
 
-    Usuarios usuario = usuarioDAO.getByEmail(email);
+    Usuario usuario = usuarioDAO.getByEmail(email);
 
     if (usuario == null) {
       req.setAttribute("mensajeError", "Credenciales no válidas.");

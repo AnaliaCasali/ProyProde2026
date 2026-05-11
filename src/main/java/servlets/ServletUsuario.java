@@ -1,14 +1,10 @@
 package servlets;
 
-import dao.UsuarioImpl;
-import entities.Usuarios;
 import enums.TipoUsuario;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import utils.PasswordUtil;
 
 import java.io.IOException;
 import java.util.Date;

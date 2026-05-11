@@ -1,5 +1,6 @@
 package dao;
 
+import entities.Equipo;
 import entities.Jugada;
 import entities.Partido;
 import entities.Usuarios;
@@ -64,8 +65,18 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
         // Mapeo de Partido con nombres de equipos
         Partido p = new Partido();
         p.setIdPartido(rs.getInt("idPartido"));
-        p.setEquipolocal(rs.getString("nombreLocal"));
-        p.setEquipoVisitante(rs.getString("nombreVisitante"));
+
+
+        // Creamos el objeto Equipo Local
+        Equipo loc = new Equipo();
+        loc.setNombre(rs.getString("nombreLocal"));
+        p.setEquipoLocal(loc);
+
+        // Creamos el objeto Equipo Visitante
+        Equipo vis = new Equipo();
+        vis.setNombre(rs.getString("nombreVisitante"));
+        p.setEquipoVisitante(vis);
+
         j.setPartido(p);
 
         j.setGolesLocal(rs.getInt("golesLocal"));
@@ -160,8 +171,17 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
           Partido p = new Partido();
           p.setIdPartido(rs.getInt("idPartido"));
-          p.setEquipolocal(rs.getString("nombreLocal"));
-          p.setEquipoVisitante(rs.getString("nombreVisitante"));
+
+          // Creamos el objeto Equipo Local
+          Equipo loc = new Equipo();
+          loc.setNombre(rs.getString("nombreLocal"));
+          p.setEquipoLocal(loc);
+
+          // Creamos el objeto Equipo Visitante
+          Equipo vis = new Equipo();
+          vis.setNombre(rs.getString("nombreVisitante"));
+          p.setEquipoVisitante(vis);
+
           jugada.setPartido(p);
 
           jugada.setGolesLocal(rs.getInt("golesLocal"));
@@ -225,8 +245,17 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
           Partido p = new Partido();
           p.setIdPartido(rs.getInt("idPartido"));
-          p.setEquipolocal(rs.getString("nombreLocal"));
-          p.setEquipoVisitante(rs.getString("nombreVisitante"));
+
+          // Creamos el objeto Equipo Local
+          Equipo loc = new Equipo();
+          loc.setNombre(rs.getString("nombreLocal"));
+          p.setEquipoLocal(loc);
+
+          // Creamos el objeto Equipo Visitante
+          Equipo vis = new Equipo();
+          vis.setNombre(rs.getString("nombreVisitante"));
+          p.setEquipoVisitante(vis); // Ahora sí acepta el objeto
+
           jugada.setPartido(p);
 
           jugada.setGolesLocal(rs.getInt("golesLocal"));
@@ -259,8 +288,17 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
           Partido p = new Partido();
           p.setIdPartido(rs.getInt("idPartido"));
-          p.setEquipolocal(rs.getString("nombreLocal"));
-          p.setEquipoVisitante(rs.getString("nombreVisitante"));
+
+          // Creamos el objeto Equipo Local
+          Equipo loc = new Equipo();
+          loc.setNombre(rs.getString("nombreLocal"));
+          p.setEquipoLocal(loc);
+
+          // Creamos el objeto Equipo Visitante
+          Equipo vis = new Equipo();
+          vis.setNombre(rs.getString("nombreVisitante"));
+          p.setEquipoVisitante(vis);
+
           j.setPartido(p);
 
           j.setGolesLocal(rs.getInt("golesLocal"));

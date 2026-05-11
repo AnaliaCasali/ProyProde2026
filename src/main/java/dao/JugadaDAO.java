@@ -65,8 +65,6 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
         p.setIdPartido(rs.getInt("idPartido"));
         p.setEquipolocal(rs.getString("nombreLocal"));
         p.setEquipoVisitante(rs.getString("nombreVisitante"));
-
-        // CORRECCIÓN: Mapeo del DATETIME a LocalDateTime
         if (rs.getTimestamp("fechaHora") != null) {
           p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
         }

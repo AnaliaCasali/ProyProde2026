@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <!doctype html>
 <html lang="es">
   <head>
@@ -16,7 +18,7 @@
     />
 
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="../css/estilo.css" />
+    <link rel="stylesheet" href="css/estilo.css" />
   </head>
   <body>
     <!-- NAVBAR SUPERIOR -->
@@ -76,6 +78,9 @@
           >
           <a href="fixture.html" class="list-group-item list-group-item-action"
             >Fixture</a
+          >
+          <a href="infoCuenta.jsp" class="list-group-item list-group-item-action"
+            >Información de la cuenta</a
           >
         </div>
       </div>

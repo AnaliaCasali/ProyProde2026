@@ -1,15 +1,15 @@
 package entities;
 
-public class etapas {
+public class Etapas {
   private int id;
   private String nombreEtapa;
 
 
-  public etapas(int id) {
+  public Etapas(int id) {
     this.id = id;
   }
 
-  public etapas(int id, String nombreEtapa) {
+  public Etapas(int id, String nombreEtapa) {
     this.id = id;
     this.nombreEtapa = nombreEtapa;
   }

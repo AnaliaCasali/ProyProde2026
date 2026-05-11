@@ -7,7 +7,7 @@ public class Partido {
     private int idPartido;
     private Equipo equipoLocal;
     private Equipo equipoVisitante;
-    private etapas etapa;
+    private Etapa etapa;
     private Estadio estadio;
     private LocalDateTime fechaHora;
     private int golesLocal;
@@ -19,7 +19,7 @@ public class Partido {
     public Partido() {}
 
     //Constructor con todos los parametros
-    public Partido(int idPartido, Equipo equipoLocal, Equipo equipoVisitante, etapas etapa, Estadio estadio, LocalDateTime fechaHora, int golesLocal, int golesVisitante, boolean finalizado) {
+    public Partido(int idPartido, Equipo equipoLocal, Equipo equipoVisitante, Etapa etapa, Estadio estadio, LocalDateTime fechaHora, int golesLocal, int golesVisitante, boolean finalizado) {
         this.idPartido = idPartido;
         this.equipoLocal = equipoLocal;
         this.equipoVisitante = equipoVisitante;
@@ -35,7 +35,7 @@ public class Partido {
     public int getIdPartido() {return idPartido;}
     public Equipo getEquipoLocal() {return equipoLocal;}
     public Equipo getEquipoVisitante() {return equipoVisitante;}
-    public etapas getEtapa() {return etapa;}
+    public Etapa getEtapa() {return etapa;}
     public Estadio getEstadio() {return estadio;}
     public LocalDateTime getFechaHora() {return fechaHora;}
     public int getGolesLocal() {return golesLocal;}
@@ -46,7 +46,7 @@ public class Partido {
     public void setIdPartido(int idPartido) {this.idPartido = idPartido;}
     public void setEquipoLocal(Equipo equipoLocal) {this.equipoLocal = equipoLocal;}
     public void setEquipoVisitante(Equipo equipoVisitante) {this.equipoVisitante = equipoVisitante;}
-    public void setEtapa(etapas etapa) {this.etapa = etapa;}
+    public void setEtapa(Etapa etapa) {this.etapa = etapa;}
     public void setEstadio(Estadio estadio) {this.estadio = estadio;}
     public void setFechaHora(LocalDateTime fechaHora) {this.fechaHora = fechaHora;}
     public void setGolesLocal(int golesLocal) {this.golesLocal = golesLocal;}

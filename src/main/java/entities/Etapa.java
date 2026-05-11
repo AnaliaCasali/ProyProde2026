@@ -1,17 +1,17 @@
 package entities;
 
-public class etapas {
+public class Etapa {
   private int idEtapa;
   private String nombreEtapa;
 
   //Cree el constructor vacio para poder usarlo en PartidoDAO
-  public etapas() {}
+  public Etapa() {}
 
-  public etapas(int idEtapa) {
+  public Etapa(int idEtapa) {
     this.idEtapa = idEtapa;
   }
 
-  public etapas(int idEtapa, String nombreEtapa) {
+  public Etapa(int idEtapa, String nombreEtapa) {
     this.idEtapa = idEtapa;
     this.nombreEtapa = nombreEtapa;
   }

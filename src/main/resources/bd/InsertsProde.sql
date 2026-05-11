@@ -1,4 +1,4 @@
-ALTER TABLE `prode`.`Partidos` 
+ALTER TABLE `prode`.`Partidos`
 MODIFY COLUMN `equipoLocal` INT NULL,
 MODIFY COLUMN `equipoVisitante` INT NULL;
 
@@ -19,7 +19,7 @@ ALTER TABLE `prode`.`Estadios` AUTO_INCREMENT = 1;
 
 -- 3. ESTADIOS (IDs 1 al 16)
 INSERT INTO `prode`.`Estadios` (estadio, ciudad, pais) VALUES
-('Estadio Azteca', 'CDMX', 'México'), ('Estadio Akron', 'Guadalajara', 'México'), 
+('Estadio Azteca', 'CDMX', 'México'), ('Estadio Akron', 'Guadalajara', 'México'),
 ('Estadio BBVA', 'Monterrey', 'México'), ('BMO Field', 'Toronto', 'Canadá'),
 ('BC Place', 'Vancouver', 'Canadá'), ('Mercedes-Benz Stadium', 'Atlanta', 'USA'),
 ('Gillette Stadium', 'Boston', 'USA'), ('AT&T Stadium', 'Dallas', 'USA'),
@@ -34,21 +34,67 @@ INSERT INTO `prode`.`Etapas` (nombreEtapa) VALUES
 ('Dieciseisavos de Final'), ('Octavos de Final'), ('Cuartos de Final'),
 ('Semifinal'), ('Tercer Puesto'), ('Final');
 
--- 5. EQUIPOS (Los 48 países, IDs 1 al 48)
-INSERT INTO `prode`.`Equipos` (nombre, grupo) VALUES
-('México', 'A'), ('Sudáfrica', 'A'), ('Corea del Sur', 'A'), ('República Checa', 'A'),
-('Canadá', 'B'), ('Bosnia y Herz.', 'B'), ('Qatar', 'B'), ('Suiza', 'B'),
-('Uruguay', 'C'), ('Marruecos', 'C'), ('Haití', 'C'), ('Escocia', 'C'),
-('Estados Unidos', 'D'), ('Paraguay', 'D'), ('Australia', 'D'), ('Turquía', 'D'),
-('Brasil', 'E'), ('Egipto', 'E'), ('Japón', 'E'), ('Polonia', 'E'),
-('España', 'F'), ('Nigeria', 'F'), ('Irak', 'F'), ('Gales', 'F'),
-('Francia', 'G'), ('Senegal', 'G'), ('Irán', 'G'), ('Rumanía', 'G'),
-('Inglaterra', 'H'), ('Ecuador', 'H'), ('Uzbekistán', 'H'), ('Noruega', 'H'),
-('Bélgica', 'I'), ('Costa de Marfil', 'I'), ('Panamá', 'I'), ('Ucrania', 'I'),
-('Argentina', 'J'), ('Argelia', 'J'), ('Austria', 'J'), ('Jordania', 'J'),
-('Portugal', 'K'), ('Camerún', 'K'), ('Costa Rica', 'K'), ('Hungría', 'K'),
-('Países Bajos', 'L'), ('Colombia', 'L'), ('Nueva Zelanda', 'L'), ('Serbia', 'L');
-
+INSERT INTO `prode`.`Equipos` (nombre, grupo, icono) VALUES
+-- Grupo A
+('México', 'Grupo A', 'https://flagcdn.com/w80/mx.png'),
+('Sudáfrica', 'Grupo A', 'https://flagcdn.com/w80/za.png'),
+('Corea del Sur', 'Grupo A', 'https://flagcdn.com/w80/kr.png'),
+('República Checa', 'Grupo A', 'https://flagcdn.com/w80/cz.png'),
+-- Grupo B
+('Canadá', 'Grupo B', 'https://flagcdn.com/w80/ca.png'),
+('Bosnia y Herz.', 'Grupo B', 'https://flagcdn.com/w80/ba.png'),
+('Qatar', 'Grupo B', 'https://flagcdn.com/w80/qa.png'),
+('Suiza', 'Grupo B', 'https://flagcdn.com/w80/ch.png'),
+-- Grupo C
+('Uruguay', 'Grupo C', 'https://flagcdn.com/w80/uy.png'),
+('Marruecos', 'Grupo C', 'https://flagcdn.com/w80/ma.png'),
+('Haití', 'Grupo C', 'https://flagcdn.com/w80/ht.png'),
+('Escocia', 'Grupo C', 'https://flagcdn.com/w80/gb-sct.png'),
+-- Grupo D
+('Estados Unidos', 'Grupo D', 'https://flagcdn.com/w80/us.png'),
+('Paraguay', 'Grupo D', 'https://flagcdn.com/w80/py.png'),
+('Australia', 'Grupo D', 'https://flagcdn.com/w80/au.png'),
+('Turquía', 'Grupo D', 'https://flagcdn.com/w80/tr.png'),
+-- Grupo E
+('Brasil', 'Grupo E', 'https://flagcdn.com/w80/br.png'),
+('Egipto', 'Grupo E', 'https://flagcdn.com/w80/eg.png'),
+('Japón', 'Grupo E', 'https://flagcdn.com/w80/jp.png'),
+('Polonia', 'Grupo E', 'https://flagcdn.com/w80/pl.png'),
+-- Grupo F
+('España', 'Grupo F', 'https://flagcdn.com/w80/es.png'),
+('Nigeria', 'Grupo F', 'https://flagcdn.com/w80/ng.png'),
+('Irak', 'Grupo F', 'https://flagcdn.com/w80/iq.png'),
+('Gales', 'Grupo F', 'https://flagcdn.com/w80/gb-wls.png'),
+-- Grupo G
+('Francia', 'Grupo G', 'https://flagcdn.com/w80/fr.png'),
+('Senegal', 'Grupo G', 'https://flagcdn.com/w80/sn.png'),
+('Irán', 'Grupo G', 'https://flagcdn.com/w80/ir.png'),
+('Rumanía', 'Grupo G', 'https://flagcdn.com/w80/ro.png'),
+-- Grupo H
+('Inglaterra', 'Grupo H', 'https://flagcdn.com/w80/gb.png'),
+('Ecuador', 'Grupo H', 'https://flagcdn.com/w80/ec.png'),
+('Uzbekistán', 'Grupo H', 'https://flagcdn.com/w80/uz.png'),
+('Noruega', 'Grupo H', 'https://flagcdn.com/w80/no.png'),
+-- Grupo I
+('Bélgica', 'Grupo I', 'https://flagcdn.com/w80/be.png'),
+('Costa de Marfil', 'Grupo I', 'https://flagcdn.com/w80/ci.png'),
+('Panamá', 'Grupo I', 'https://flagcdn.com/w80/pa.png'),
+('Ucrania', 'Grupo I', 'https://flagcdn.com/w80/ua.png'),
+-- Grupo J
+('Argentina', 'Grupo J', 'https://flagcdn.com/w80/ar.png'),
+('Argelia', 'Grupo J', 'https://flagcdn.com/w80/dz.png'),
+('Austria', 'Grupo J', 'https://flagcdn.com/w80/at.png'),
+('Jordania', 'Grupo J', 'https://flagcdn.com/w80/jo.png'),
+-- Grupo K
+('Portugal', 'Grupo K', 'https://flagcdn.com/w80/pt.png'),
+('Camerún', 'Grupo K', 'https://flagcdn.com/w80/cm.png'),
+('Costa Rica', 'Grupo K', 'https://flagcdn.com/w80/cr.png'),
+('Hungría', 'Grupo K', 'https://flagcdn.com/w80/hu.png'),
+-- Grupo L
+('Países Bajos', 'Grupo L', 'https://flagcdn.com/w80/nl.png'),
+('Colombia', 'Grupo L', 'https://flagcdn.com/w80/co.png'),
+('Nueva Zelanda', 'Grupo L', 'https://flagcdn.com/w80/nz.png'),
+('Serbia', 'Grupo L', 'https://flagcdn.com/w80/rs.png');
 INSERT INTO `prode`.`Partidos` (equipoLocal, equipoVisitante, idEtapa, idEstadio, fechaHora, finalizado) VALUES
 -- GRUPO A
 (1, 2, 1, 1, '2026-06-11 16:00:00', 0), (3, 4, 1, 2, '2026-06-11 20:00:00', 0),

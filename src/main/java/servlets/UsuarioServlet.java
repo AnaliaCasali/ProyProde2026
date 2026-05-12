@@ -17,7 +17,7 @@ import java.util.Date;
 
 @WebServlet("/usuarios")
 
-public class ServletUsuario extends HttpServlet {
+public class UsuarioServlet extends HttpServlet {
 
   // para manejo de operaciones de usuario
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

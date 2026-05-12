@@ -22,7 +22,6 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
   private static final String SQL_DELETE =
       "DELETE FROM Jugadas WHERE idJugada = ?";
 
-  // CORRECCIÓN: Se agregó p.fechaHora para poder bloquear la edición según el Escenario 3
   private static final String SQL_GETALL =
       "SELECT j.idJugada, j.idUsuario, j.idPartido, j.golesLocal, j.golesVisitante, j.puntaje, " +
           "el.nombre AS nombreLocal, ev.nombre AS nombreVisitante, p.fechaHora " +
@@ -46,6 +45,32 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
   private static final String SQL_GET_BY_ETAPA =
       SQL_GETALL + " WHERE j.idUsuario = ? AND p.idEtapa = ?";
 
+  // --- MÉTODO AUXILIAR DE MAPEO  ---
+  private Jugada mapearJugada(ResultSet rs) throws SQLException {
+    Jugada j = new Jugada();
+    j.setIdJugada(rs.getInt("idJugada"));
+
+    Usuarios u = new Usuarios();
+    u.setIdUsuario(rs.getInt("idUsuario"));
+    j.setUsuario(u);
+
+    Partido p = new Partido();
+    p.setIdPartido(rs.getInt("idPartido"));
+    p.setEquipolocal(rs.getString("nombreLocal"));
+    p.setEquipoVisitante(rs.getString("nombreVisitante"));
+
+    if (rs.getTimestamp("fechaHora") != null) {
+      p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+    }
+    j.setPartido(p);
+
+    j.setGolesLocal(rs.getInt("golesLocal"));
+    j.setGolesVisitante(rs.getInt("golesVisitante"));
+    j.setPuntaje(rs.getInt("puntaje"));
+
+    return j;
+  }
+
   @Override
   public List<Jugada> getAll() {
     List<Jugada> lista = new ArrayList<>();
@@ -54,27 +79,7 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
          ResultSet rs = ps.executeQuery()) {
 
       while (rs.next()) {
-        Jugada j = new Jugada();
-        j.setIdJugada(rs.getInt("idJugada"));
-
-        Usuarios u = new Usuarios();
-        u.setIdUsuario(rs.getInt("idUsuario"));
-        j.setUsuario(u);
-
-        Partido p = new Partido();
-        p.setIdPartido(rs.getInt("idPartido"));
-        p.setEquipolocal(rs.getString("nombreLocal"));
-        p.setEquipoVisitante(rs.getString("nombreVisitante"));
-        if (rs.getTimestamp("fechaHora") != null) {
-          p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
-        }
-        j.setPartido(p);
-
-        j.setGolesLocal(rs.getInt("golesLocal"));
-        j.setGolesVisitante(rs.getInt("golesVisitante"));
-        j.setPuntaje(rs.getInt("puntaje"));
-
-        lista.add(j);
+        lista.add(mapearJugada(rs));
       }
     } catch (SQLException e) {
       throw new JugadaException("Error al listar las jugadas desde la base de datos", e);
@@ -153,26 +158,7 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          jugada = new Jugada();
-          jugada.setIdJugada(rs.getInt("idJugada"));
-
-          Usuarios u = new Usuarios();
-          u.setIdUsuario(rs.getInt("idUsuario"));
-          jugada.setUsuario(u);
-
-          Partido p = new Partido();
-          p.setIdPartido(rs.getInt("idPartido"));
-          p.setEquipolocal(rs.getString("nombreLocal"));
-          p.setEquipoVisitante(rs.getString("nombreVisitante"));
-
-          if (rs.getTimestamp("fechaHora") != null) {
-            p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
-          }
-          jugada.setPartido(p);
-
-          jugada.setGolesLocal(rs.getInt("golesLocal"));
-          jugada.setGolesVisitante(rs.getInt("golesVisitante"));
-          jugada.setPuntaje(rs.getInt("puntaje"));
+          jugada = mapearJugada(rs);
         }
       }
     } catch (SQLException e) {
@@ -222,26 +208,7 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
       try (ResultSet rs = ps.executeQuery()) {
         if (rs.next()) {
-          jugada = new Jugada();
-          jugada.setIdJugada(rs.getInt("idJugada"));
-
-          Usuarios u = new Usuarios();
-          u.setIdUsuario(rs.getInt("idUsuario"));
-          jugada.setUsuario(u);
-
-          Partido p = new Partido();
-          p.setIdPartido(rs.getInt("idPartido"));
-          p.setEquipolocal(rs.getString("nombreLocal"));
-          p.setEquipoVisitante(rs.getString("nombreVisitante"));
-
-          if (rs.getTimestamp("fechaHora") != null) {
-            p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
-          }
-          jugada.setPartido(p);
-
-          jugada.setGolesLocal(rs.getInt("golesLocal"));
-          jugada.setGolesVisitante(rs.getInt("golesVisitante"));
-          jugada.setPuntaje(rs.getInt("puntaje"));
+          jugada = mapearJugada(rs);
         }
       }
     } catch (SQLException e) {
@@ -260,28 +227,7 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
       try (ResultSet rs = ps.executeQuery()) {
         while (rs.next()) {
-          Jugada j = new Jugada();
-          j.setIdJugada(rs.getInt("idJugada"));
-
-          Usuarios u = new Usuarios();
-          u.setIdUsuario(rs.getInt("idUsuario"));
-          j.setUsuario(u);
-
-          Partido p = new Partido();
-          p.setIdPartido(rs.getInt("idPartido"));
-          p.setEquipolocal(rs.getString("nombreLocal"));
-          p.setEquipoVisitante(rs.getString("nombreVisitante"));
-
-          if (rs.getTimestamp("fechaHora") != null) {
-            p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
-          }
-          j.setPartido(p);
-
-          j.setGolesLocal(rs.getInt("golesLocal"));
-          j.setGolesVisitante(rs.getInt("golesVisitante"));
-          j.setPuntaje(rs.getInt("puntaje"));
-
-          listaPorEtapa.add(j);
+          listaPorEtapa.add(mapearJugada(rs));
         }
       }
     } catch (SQLException e) {

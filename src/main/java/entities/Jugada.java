@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Jugada {
   private int idJugada;
-  private Usuarios usuario;
+  private Usuario usuario;
   private Partido partido;
   private int golesLocal;
   private int golesVisitante;
@@ -13,7 +13,7 @@ public class Jugada {
   public Jugada() {
   }
 
-  public Jugada (int idJugada, Usuarios usuario, Partido partido, int golesLocal, int golesVisitante, int puntaje) {
+  public Jugada (int idJugada, Usuario usuario, Partido partido, int golesLocal, int golesVisitante, int puntaje) {
     this.idJugada = idJugada;
     this.usuario = usuario;
     this.partido = partido;
@@ -30,11 +30,11 @@ public class Jugada {
     this.idJugada = idJugada;
   }
 
-  public Usuarios getUsuario() {
+  public Usuario getUsuario() {
     return usuario;
   }
 
-  public void setUsuario(Usuarios usuario) {
+  public void setUsuario(Usuario usuario) {
     this.usuario = usuario;
   }
 

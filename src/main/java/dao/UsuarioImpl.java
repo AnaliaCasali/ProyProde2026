@@ -316,7 +316,10 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
         Usuario u = new Usuario();
         u.setIdUsuario(rs.getInt("idUsuario"));
         u.setEmail(rs.getString("email"));
-        u.setCarrera(Carrera.valueOf("carrera"));
+        String carreraBD = rs.getString("carrera");
+        if (carreraBD != null && !carreraBD.isEmpty()) {
+          u.setCarrera(Carrera.valueOf(carreraBD));
+        }
 
         u.setPuntajeTotal(rs.getInt("puntajeTotal"));
 

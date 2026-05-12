@@ -14,6 +14,7 @@ import utils.PasswordUtil;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
 
 @WebServlet("/usuarios")
 
@@ -88,6 +89,44 @@ public class UsuarioServlet extends HttpServlet {
     // eliminar usuario
     if (operacion.equals("eliminar")) { // si es borrar
       usuarioDAO.delete(idUsuario);
+    }
+  }
+
+
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    String accion = req.getParameter("accion");
+
+    if (accion == null) {
+      accion = "index";
+    }
+
+    switch (accion) {
+      case "verRanking":
+        UsuarioImpl usuarioDAO = new UsuarioImpl();
+
+        List<Usuario> listaRanking = usuarioDAO.obtenerRankingUsuarios();
+
+        List<Usuario> top3 = listaRanking.stream()
+            .limit(3) // para filtrar los primeros 3
+            .collect(java.util.stream.Collectors.toList());
+
+        req.setAttribute("usuariosRanking", top3);
+        RequestDispatcher rdRanking = req.getRequestDispatcher("/ranking.jsp");
+        rdRanking.forward(req, res);
+        break;
+
+      case "registro":
+        req.setAttribute("listaTipos", TipoUsuario.values());
+        req.setAttribute("listaCarreras", Carrera.values());
+
+        RequestDispatcher rdRegistro = req.getRequestDispatcher("/formRegistro.jsp");
+        rdRegistro.forward(req, res);
+        break;
+
+      default: // por defecto
+        res.sendRedirect("index.jsp");
+        break;
     }
   }
 }

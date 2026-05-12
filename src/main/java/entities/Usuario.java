@@ -2,7 +2,9 @@ package entities;
 
 import enums.TipoUsuario;
 
-public class Usuarios {
+import java.util.Objects;
+
+public class Usuario implements Comparable {
   private int idUsuario;
   private String email;
   private String password;
@@ -11,11 +13,10 @@ public class Usuarios {
   private String carrera;
   private String nombreGrupo;
 
-  public Usuarios() {
-
+  public Usuario() {
   }
 
-  public Usuarios(String email, String password, String curso, String carrera, String nombreGrupo) {
+  public Usuario(String email, String password, String curso, String carrera, String nombreGrupo) {
     this.email = email;
     this.password = password;
     this.curso = curso;
@@ -23,7 +24,7 @@ public class Usuarios {
     this.nombreGrupo = nombreGrupo;
   }
 
-  public Usuarios(String email, String password, TipoUsuario tipo, String curso, String carrera) {
+  public Usuario(String email, String password, TipoUsuario tipo, String curso, String carrera) {
     this.email = email;
     this.password = password;
     this.tipo = tipo;
@@ -37,7 +38,7 @@ public class Usuarios {
 
   public void setIdUsuario(int idUsuario) {
     this.idUsuario = idUsuario;
-  } // Se agrega setter de idUsuario por problemas en JugadaDAO a la hora de mapear los datos en el rs
+  }
 
   public String getEmail() {
     return email;
@@ -53,6 +54,14 @@ public class Usuarios {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public TipoUsuario getTipo() {
+    return tipo;
+  }
+
+  public void setTipo(TipoUsuario tipo) {
+    this.tipo = tipo;
   }
 
   public String getCurso() {
@@ -80,12 +89,28 @@ public class Usuarios {
   }
 
   // métodos
-  // tostring
+  // equals y hashcode solo para email - idUsuario
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    Usuario otro = (Usuario) o;
+    return idUsuario == otro.idUsuario &&
+        Objects.equals(email, otro.email);
+  }
 
-  // equals
+  @Override
+  public int hashCode() {
+    return Objects.hash(idUsuario, email);
+  }
 
-  // hashcode
+  @Override
+  public int compareTo(Object o) {
+    Usuario otro = (Usuario) o;
+    int comparacionEmail = this.email.compareTo(otro.email);
 
-  // compare/comparable
+    if (comparacionEmail != 0)
+      return comparacionEmail;
 
+    return this.password.compareTo(otro.password);
+  }
 }

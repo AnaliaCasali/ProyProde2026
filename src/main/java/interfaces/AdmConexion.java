@@ -1,36 +1,52 @@
 package interfaces;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public interface AdmConexion {
 
   default Connection obtenerConexion() {
 
-    // driver jdbc
-    String dbDriver = "com.mysql.cj.jdbc.Driver";
-    // cadena conexion a base de datos
-    String dbCadenaConexion = "jdbc:mysql://localhost:3306/prode";
+    	/*
+		# Comentarios
+		db.driver=com.mysql.cj.jdbc.Driver
+		db.url=jdbc:jdbc:mysql://localhost:3306/prode
+		db.user=root
+		db.pass=root */
+    Connection conn =null;
 
-    // usuario
-    String dbUsuario = "root";
-    // password
-    String dbPass = "root";
-
-    Connection conn = null;
-
+    Properties dbProperties=new Properties();
     try {
-      Class.forName(dbDriver);
-      conn = DriverManager.getConnection(dbCadenaConexion, dbUsuario, dbPass);
-    } catch (ClassNotFoundException e) {
-      System.out.println("No se encontro el driver de la BD");
-      throw new RuntimeException(e);
+      // cargamos el archivo utilizando la ruta relativa donde esta el proyecto
+      dbProperties.load(Thread.currentThread().
+          getContextClassLoader()
+          .getResourceAsStream("database.properties"));
+
+      // leemos las propiedades
+      String driver = dbProperties.getProperty("db.driver");
+      String cadenaConexion= dbProperties.getProperty("db.url");
+      String usuario= dbProperties.getProperty("db.user", "root");
+      String pass= dbProperties.getProperty("db.pass");
+
+      Class.forName(driver);
+      conn = DriverManager.
+          getConnection(cadenaConexion,usuario, pass);
+
     } catch (SQLException e) {
-      System.out.println("No se pudo conectar a la BD");
-      throw new RuntimeException(e);
-    }
-    System.out.println("Conexión exitosa a la BD");
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }		 catch (ClassNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();}
+
     return conn;
+
   }
 }

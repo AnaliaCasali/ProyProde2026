@@ -4,7 +4,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>${titulo}</title>
+    <title>¿Como jugar?</title>
 
     <!-- Fuente -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,7 +29,7 @@
             <i class="bi bi-controller"></i>
             ¿Cómo jugar?
         </h1>
-        <h2 class="mt-4">🎮 ¿Cómo jugar?</h2>
+
 
         <div class="regla-box">
             <i class="bi bi-person-check-fill icono-regla"></i>
@@ -98,51 +98,57 @@
                 <p>+20 puntos por cada cantidad exacta de goles acertada, pudiendo sumar un maxico de +40 puntos por ambos marcadores acertados.</p>
             </div>
         </div>
+        <div class="ejemplos-capsula">
+<h2 class="mt-4">📊 Ejemplos de puntuación</h2>
 
-        <h2 class="mt-4">📊 Ejemplos</h2>
+<div class="contenedor-ejemplos">
 
-        <div class="ejemplo-card acierto-total">
-            <h3>✅ Acierto completo</h3>
+    <div class="ejemplo-item acierto-total">
+        <h3>✅ Acierto completo</h3>
 
-            <p><strong>Pronóstico:</strong> Argentina 3 - 0</p>
-            <p><strong>Resultado real:</strong> Argentina 3 - 0</p>
+        <p><strong>Pronóstico:</strong> Argentina 3 - 0</p>
+        <p><strong>Resultado real:</strong> Argentina 3 - 0</p>
 
-            <div class="puntos-box">
-                90 puntos
-            </div>
+        <div class="puntos-box">
+            +90 puntos
         </div>
+    </div>
 
-        <div class="ejemplo-card acierto-parcial">
-            <h3>🟡 Un gol exacto</h3>
+    <div class="ejemplo-item acierto-parcial">
+        <h3>🔵 Un gol exacto</h3>
 
-            <p><strong>Pronóstico:</strong> Argentina 3 - 0</p>
-            <p><strong>Resultado real:</strong> Argentina 3 - 1</p>
+        <p><strong>Pronóstico:</strong> Argentina 3 - 0</p>
+        <p><strong>Resultado real:</strong> Argentina 3 - 1</p>
 
-            <div class="puntos-box">
-                70 puntos
-            </div>
+        <div class="puntos-box">
+            +70 puntos
         </div>
-         <div class="ejemplo-card solo-resultado">
-                    <h3>🔵 Solo resultado</h3>
+    </div>
 
-                    <p><strong>Pronóstico:</strong> Argentina 3 - 0</p>
-                    <p><strong>Resultado real:</strong> Argentina 2 - 1</p>
+    <div class="ejemplo-item solo-resultado">
+        <h3>🟡 Solo resultado correcto</h3>
 
-                    <div class="puntos-box">
-                        50 puntos
-                    </div>
+        <p><strong>Pronóstico:</strong> Argentina 3 - 0</p>
+        <p><strong>Resultado real:</strong> Argentina 2 - 1</p>
 
+        <div class="puntos-box">
+            +50 puntos
         </div>
-               <div class="ejemplo-card ningun-resultado">
-                             <h3>🔴 ningun resultado correcto</h3>
+    </div>
 
-                             <p><strong>Pronóstico:</strong> Argentina 0 - 0</p>
-                             <p><strong>Resultado real:</strong> Argentina 2 - 1</p>
+    <div class="ejemplo-item ningun-resultado">
+        <h3>🔴 Ningún resultado correcto</h3>
 
-                             <div class="puntos-box">
-                                 0 puntos
-                             </div>
-               </div>
+        <p><strong>Pronóstico:</strong> Argentina 0 - 0</p>
+        <p><strong>Resultado real:</strong> Argentina 2 - 1</p>
+
+        <div class="puntos-box">
+            +0 puntos
+        </div>
+    </div>
+
+</div>
+</div>
 
         <a href="index.jsp" class="btn-volver">
             <i class="bi bi-arrow-left"></i>

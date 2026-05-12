@@ -196,7 +196,6 @@ body {
 /* ========================= */
 /* COMO JUGAR */
 /* ========================= */
-
 .card-como-jugar {
   background-color: var(--afa-blanco);
   border-radius: 25px;
@@ -219,6 +218,10 @@ body {
   margin-bottom: 30px;
 }
 
+/* ========================= */
+/* REGLAS */
+/* ========================= */
+
 .regla-box {
   display: flex;
   align-items: center;
@@ -239,32 +242,87 @@ body {
   margin-bottom: 5px;
   color: var(--afa-azul-oscuro);
 }
+.subtitulo {
+  text-align: center;              /* Centrado */
+  color: #003366;                  /* Azul oscuro (AFA) */
+  font-weight: 700;                /* Negrita (Bold) */
+  font-size: 1.2rem;               /* Un poco más grande */
+  letter-spacing: 1px;             /* Espacio entre letras moderno */
+  margin-bottom: 30px;             /* Espacio inferior */
 
-.ejemplo-card {
+}
+
+/* ========================= */
+/* CONTENEDOR DE EJEMPLOS */
+/* ========================= */
+
+.contenedor-ejemplos {
+  background-color: #f8f9fa;
   border-radius: 20px;
   padding: 20px;
   margin-top: 20px;
 }
+
+.ejemplo-item {
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.ejemplo-item:last-child {
+  margin-bottom: 0;
+}
+
+.ejemplo-item h3 {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.ejemplo-item p {
+  margin-bottom: 5px;
+}
+
+.ejemplos-capsula {
+  /* Fondo: un azul*/
+  background-color: rgba(0, 123, 255, 0.1);
+
+  /* Borde: un azul sólido */
+  border: 2px solid #007bff;
+
+  /* Bordes redondeados */
+  border-radius: 20px;
+
+  /* Padding para que el contenido no toque los bordes */
+  padding: 15px;
+}
+/* ========================= */
+/* COLORES DE RESULTADOS */
+/* ========================= */
 
 .acierto-total {
   background-color: rgba(40, 167, 69, 0.12);
   border: 2px solid #28a745;
 }
 
-.acierto-parcial {
+ .solo-resultado {
   background-color: rgba(255, 193, 7, 0.15);
   border: 2px solid #ffc107;
 }
 
-.solo-resultado {
+.acierto-parcial{
   background-color: rgba(23, 162, 184, 0.12);
   border: 2px solid #17a2b8;
 }
+
 .ningun-resultado {
   background-color: #ffe5e9;
   border: 2px solid #f5a3b3;
 }
-}
+
+/* ========================= */
+/* PUNTOS */
+/* ========================= */
 
 .puntos-box {
   margin-top: 15px;
@@ -275,6 +333,10 @@ body {
   border-radius: 12px;
   font-weight: 700;
 }
+
+/* ========================= */
+/* BOTON */
+/* ========================= */
 
 .btn-volver {
   display: inline-block;

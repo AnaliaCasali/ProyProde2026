@@ -131,9 +131,9 @@ body {
 /* --- BIENVENIDA --- */
 .hero-inicio {
   background: linear-gradient(
-    180deg,
-    var(--afa-celeste) 0%,
-    var(--bg-principal) 100%
+          180deg,
+          var(--afa-celeste) 0%,
+          var(--bg-principal) 100%
   );
   padding: 40px 15px;
   text-align: center;
@@ -242,15 +242,6 @@ body {
   margin-bottom: 5px;
   color: var(--afa-azul-oscuro);
 }
-.subtitulo {
-  text-align: center;              /* Centrado */
-  color: #003366;                  /* Azul oscuro (AFA) */
-  font-weight: 700;                /* Negrita (Bold) */
-  font-size: 1.2rem;               /* Un poco más grande */
-  letter-spacing: 1px;             /* Espacio entre letras moderno */
-  margin-bottom: 30px;             /* Espacio inferior */
-
-}
 
 /* ========================= */
 /* CONTENEDOR DE EJEMPLOS */
@@ -305,7 +296,7 @@ body {
   border: 2px solid #28a745;
 }
 
- .solo-resultado {
+.solo-resultado {
   background-color: rgba(255, 193, 7, 0.15);
   border: 2px solid #ffc107;
 }
@@ -352,4 +343,87 @@ body {
 
 .btn-volver:hover {
   transform: translateY(-2px);
+}
+
+/* ========================================= */
+/* --- AGREGADO NUEVO: SECCIÓN JUGAR --- */
+/* ========================================= */
+
+.color-identidad-primario { color: var(--afa-azul-oscuro); }
+.color-identidad-secundario { color: var(--afa-celeste); }
+
+.card-filtro {
+  background-color: var(--afa-blanco);
+  border-radius: 15px;
+  border: 1px solid rgba(116, 172, 223, 0.3);
+}
+
+.select-identidad {
+  border: 2px solid var(--afa-celeste);
+  font-weight: 600;
+}
+
+.btn-identidad {
+  background-color: var(--afa-azul-oscuro);
+  color: var(--afa-blanco);
+  transition: all 0.3s ease;
+}
+
+.btn-identidad:hover {
+  background-color: #254b81; /* Un azul un toque más claro */
+  color: var(--afa-blanco);
+}
+
+.card-jornada {
+  background-color: var(--afa-blanco);
+  border-radius: 15px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.header-jornada {
+  background-color: var(--afa-azul-oscuro);
+}
+
+.flag-img {
+  width: 65px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.input-goles {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  border: 2px solid var(--afa-celeste);
+  border-radius: 10px;
+}
+
+.hora-partido {
+  font-size: 1.1rem;
+  color: var(--afa-azul-oscuro);
+  min-width: 65px;
+  text-align: center;
+}
+
+.equipo-nombre {
+  font-size: 0.85rem;
+  margin-top: 5px;
+  color: var(--afa-azul-oscuro);
+}
+
+.hover-zoom:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s;
+}
+
+@media (max-width: 576px) {
+  .flag-img { width: 45px; height: 30px; }
+  .input-goles { width: 40px; height: 40px; font-size: 1rem; }
+  .hora-partido { font-size: 0.9rem; min-width: 50px; }
+  .equipo-nombre { font-size: 0.75rem; }
 }

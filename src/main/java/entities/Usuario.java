@@ -1,30 +1,34 @@
 package entities;
 
+import enums.Carrera;
 import enums.TipoUsuario;
 
 import java.util.Objects;
 
-public class Usuarios implements Comparable {
+public class Usuario implements Comparable {
   private int idUsuario;
   private String email;
   private String password;
   private TipoUsuario tipo;
   private String curso;
-  private String carrera;
+  private Carrera carrera;
   private String nombreGrupo;
 
-  public Usuarios() {
+  private int puntajeTotal;
+
+  public Usuario() {
   }
 
-  public Usuarios(String email, String password, String curso, String carrera, String nombreGrupo) {
+  public Usuario(String email, String password, TipoUsuario tipo, String curso, Carrera carrera, String nombreGrupo) {
     this.email = email;
     this.password = password;
+    this.tipo = tipo;
     this.curso = curso;
     this.carrera = carrera;
     this.nombreGrupo = nombreGrupo;
   }
 
-  public Usuarios(String email, String password, TipoUsuario tipo, String curso, String carrera) {
+  public Usuario(String email, String password, TipoUsuario tipo, String curso, Carrera carrera) {
     this.email = email;
     this.password = password;
     this.tipo = tipo;
@@ -72,11 +76,11 @@ public class Usuarios implements Comparable {
     this.curso = curso;
   }
 
-  public String getCarrera() {
+  public Carrera getCarrera() {
     return carrera;
   }
 
-  public void setCarrera(String carrera) {
+  public void setCarrera(Carrera carrera) {
     this.carrera = carrera;
   }
 
@@ -88,12 +92,20 @@ public class Usuarios implements Comparable {
     this.nombreGrupo = nombreGrupo;
   }
 
+  public int getPuntajeTotal() {
+    return puntajeTotal;
+  }
+
+  public void setPuntajeTotal(int puntajeTotal) {
+    this.puntajeTotal = puntajeTotal;
+  }
+
   // métodos
   // equals y hashcode solo para email - idUsuario
   @Override
   public boolean equals(Object o) {
     if (o == null || getClass() != o.getClass()) return false;
-    Usuarios otro = (Usuarios) o;
+    Usuario otro = (Usuario) o;
     return idUsuario == otro.idUsuario &&
         Objects.equals(email, otro.email);
   }
@@ -105,7 +117,7 @@ public class Usuarios implements Comparable {
 
   @Override
   public int compareTo(Object o) {
-    Usuarios otro = (Usuarios) o;
+    Usuario otro = (Usuario) o;
     int comparacionEmail = this.email.compareTo(otro.email);
 
     if (comparacionEmail != 0)

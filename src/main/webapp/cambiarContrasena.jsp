@@ -82,21 +82,22 @@
         </div>
       </div>
     </div>
+<main class="mainCambiarContraseña">
+    <form class="formCambiarContraseña" action="ServletUsuario" method="POST">
 
-    <form action="ServletUsuario" method="POST">
+    <label name="contraseñaActual">CONTRASEÑA ACTUAL</label>
+    <input type="password" name="contraseñaActual" id="contraseñaActual" placeholder="Contraseña Actual">
+    <br>
+    <label name="contraseñaNueva">CONTRASEÑA NUEVA</label>
+    <input type="password" name="contraseñaNueva" id="contraseñaNueva" placeholder="Contraseña Nueva">
+    <br>
+    <label name="repetirContraseñaNueva"> REPETIR CONTRASEÑA NUEVA</label>
+    <input type="password" name="repetirContraseñaNueva" id="repetirContraseñaNueva" placeholder="Repetir Contraseña Nueva">
+    <br>
+    <button class="btnActualizarContraseña">ACTUALIZAR CONTRASEÑA</button>
+    </form>
 
-    <label name="">CONTRASEÑA ACTUAL
-    <input type="text" name="contraseñaActual" id="contraseñaActual" placeholder="Contraseña Actual">
-    <br>
-    <label name="">CONTRASEÑA NUEVA
-    <input type="text" name="contraseñaNueva" id="contraseñaNueva" placeholder="Contraseña Nueva">
-    <br>
-    <label name=""> REPETIR CONTRASEÑA NUEVA
-    <input type="text" name="repetirContraseñaNueva" id="repetirContraseñaNueva" placeholder="Repetir Contraseña Nueva">
-    <br>
-    <button>ENVIAR</button>
-
-    </main>
+</main>
 
     <!-- NAVEGACIÓN INFERIOR (MOBILE) -->
     <div class="mobile-nav">

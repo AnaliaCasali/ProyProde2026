@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!doctype html>
 <html lang="es">
@@ -79,9 +80,11 @@
           <a href="fixture.html" class="list-group-item list-group-item-action"
             >Fixture</a
           >
-          <a href="infoCuenta.jsp" class="list-group-item list-group-item-action"
+
+          <a href="informacionDeLaCuenta.jsp" class="list-group-item list-group-item-action"
             >Información de la cuenta</a
           >
+
         </div>
       </div>
     </div>

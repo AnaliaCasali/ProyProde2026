@@ -82,8 +82,11 @@
         </div>
       </div>
     </div>
+   <main class="mainInformacionDeLaCuenta">
 
-    <a href="cambiarContrasena.jsp">Cambiar contraseña</a>
+    <div class="divInformacionDeLaCuenta">
+       <a class="btnCambiarContraseña" href="cambiarContrasena.jsp">CAMBIAR CONTRASEÑA</a>
+    </div>
 
     </main>
 

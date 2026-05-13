@@ -353,3 +353,83 @@ body {
 .btn-volver:hover {
   transform: translateY(-2px);
 }
+
+/* ========================= */
+/* ADMIN - CARGA PARTIDOS */
+/* ========================= */
+
+.admin-panel {
+  background-color: var(--afa-blanco);
+  border: 1px solid rgba(116, 172, 223, 0.35);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
+  max-width: 920px;
+  padding: 24px;
+}
+
+.admin-panel-header {
+  align-items: flex-start;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+}
+
+.admin-panel-header h1 {
+  color: var(--afa-azul-oscuro);
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.admin-eyebrow {
+  color: #667085;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.admin-badge {
+  background-color: var(--afa-azul-oscuro);
+  border-radius: 8px;
+  color: var(--afa-amarillo);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.admin-form .form-label {
+  color: var(--afa-azul-oscuro);
+  font-weight: 700;
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+@media (max-width: 576px) {
+  .admin-panel {
+    padding: 18px;
+  }
+
+  .admin-panel-header {
+    display: block;
+  }
+
+  .admin-badge {
+    display: inline-block;
+    margin-top: 12px;
+  }
+
+  .admin-actions .btn {
+    width: 100%;
+  }
+}

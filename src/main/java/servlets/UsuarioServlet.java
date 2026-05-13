@@ -112,7 +112,7 @@ public class UsuarioServlet extends HttpServlet {
             .collect(java.util.stream.Collectors.toList());
 
         req.setAttribute("usuariosRanking", top3);
-        RequestDispatcher rdRanking = req.getRequestDispatcher("/ranking.jsp");
+        RequestDispatcher rdRanking = req.getRequestDispatcher("/index.jsp");
         rdRanking.forward(req, res);
         break;
 

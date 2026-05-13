@@ -1,5 +1,6 @@
 package entities;
 
+import enums.Carrera;
 import enums.TipoUsuario;
 
 import java.util.Objects;
@@ -10,21 +11,24 @@ public class Usuario implements Comparable {
   private String password;
   private TipoUsuario tipo;
   private String curso;
-  private String carrera;
+  private Carrera carrera;
   private String nombreGrupo;
+
+  private int puntajeTotal;
 
   public Usuario() {
   }
 
-  public Usuario(String email, String password, String curso, String carrera, String nombreGrupo) {
+  public Usuario(String email, String password, TipoUsuario tipo, String curso, Carrera carrera, String nombreGrupo) {
     this.email = email;
     this.password = password;
+    this.tipo = tipo;
     this.curso = curso;
     this.carrera = carrera;
     this.nombreGrupo = nombreGrupo;
   }
 
-  public Usuario(String email, String password, TipoUsuario tipo, String curso, String carrera) {
+  public Usuario(String email, String password, TipoUsuario tipo, String curso, Carrera carrera) {
     this.email = email;
     this.password = password;
     this.tipo = tipo;
@@ -72,11 +76,11 @@ public class Usuario implements Comparable {
     this.curso = curso;
   }
 
-  public String getCarrera() {
+  public Carrera getCarrera() {
     return carrera;
   }
 
-  public void setCarrera(String carrera) {
+  public void setCarrera(Carrera carrera) {
     this.carrera = carrera;
   }
 
@@ -86,6 +90,14 @@ public class Usuario implements Comparable {
 
   public void setNombreGrupo(String nombreGrupo) {
     this.nombreGrupo = nombreGrupo;
+  }
+
+  public int getPuntajeTotal() {
+    return puntajeTotal;
+  }
+
+  public void setPuntajeTotal(int puntajeTotal) {
+    this.puntajeTotal = puntajeTotal;
   }
 
   // métodos

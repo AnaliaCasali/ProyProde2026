@@ -35,79 +35,110 @@ public class JugadaServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
-
     if (usuarioLogueado == null) {
       response.sendRedirect("login.jsp");
       return;
     }
 
+    int pronosticosGuardados = 0;
+    List<String> errores = new ArrayList<>();
+
     try {
-      // 1. VALIDACIÓN DE FORMATO (FormatoGolesInvalidoException)
-      int idPartido;
-      int golesLocal;
-      int golesVisitante;
+      // 1. Capturamos la jornada actual del input oculto
+      String jornadaActualStr = request.getParameter("jornadaActual");
+      int jornadaActual = (jornadaActualStr != null && !jornadaActualStr.isEmpty()) ? Integer.parseInt(jornadaActualStr) : 1;
 
-      try {
-        idPartido = Integer.parseInt(request.getParameter("idPartido"));
-        golesLocal = Integer.parseInt(request.getParameter("golesLocal"));
-        golesVisitante = Integer.parseInt(request.getParameter("golesVisitante"));
+      // 2. Traemos los partidos de esta fecha de una sola vez para no sobrecargar la base de datos
+      List<Partido> partidosDeLaJornada = jugadaDAO.getPartidosByJornada(jornadaActual);
 
-        if (golesLocal < 0 || golesVisitante < 0) {
-          throw new FormatoGolesInvalidoException("Los goles no pueden ser números negativos.");
-        }
-      } catch (NumberFormatException e) {
-        throw new FormatoGolesInvalidoException("Por favor, ingresa valores numéricos válidos para los goles.");
-      }
+      // 3. STREAMS: Obtenemos todos los parámetros del request, filtramos los goles locales y extraemos el ID
+      List<Integer> idsPartidosFormulario = java.util.Collections.list(request.getParameterNames()).stream()
+          .filter(param -> param.startsWith("golesL_"))
+          .map(param -> Integer.parseInt(param.split("_")[1])) // Cortamos "golesL_12" para quedarnos con el "12"
+          .collect(java.util.stream.Collectors.toList());
 
-      // 2. LÓGICA DE NEGOCIO Y TIEMPOS (Escenarios 2 y 3)
-      Jugada jugadaExistente = jugadaDAO.getByUserAndMatch(usuarioLogueado.getIdUsuario(), idPartido);
       LocalDateTime ahora = LocalDateTime.now();
 
-      // Buscamos el partido para validar la hora (si no existe la jugada, lo buscamos del DAO)
-      Partido partidoInfo = (jugadaExistente != null) ?
-          jugadaExistente.getPartido() :
-          jugadaDAO.getPartidosByJornada(1).stream() // Búsqueda rápida por ID
-          .filter(p -> p.getIdPartido() == idPartido)
-          .findFirst().orElse(null);
+      // 4. Procesamos cada partido que vino en el formulario
+      for (Integer idPartido : idsPartidosFormulario) {
+        try {
+          String strGolesL = request.getParameter("golesL_" + idPartido);
+          String strGolesV = request.getParameter("golesV_" + idPartido);
 
-      if (partidoInfo != null) {
-        LocalDateTime horaPartido = partidoInfo.getFechaHora();
+          // Si el usuario borró el número y lo dejó en blanco, saltamos este partido
+          if (strGolesL == null || strGolesL.isEmpty() || strGolesV == null || strGolesV.isEmpty()) {
+            continue;
+          }
 
-        if (ahora.isAfter(horaPartido)) {
-          throw new PartidoYaComenzadoException("El partido ya ha comenzado. No puedes modificar tu pronóstico.");
-        }
+          int golesLocal = Integer.parseInt(strGolesL);
+          int golesVisitante = Integer.parseInt(strGolesV);
 
-        if (ahora.isAfter(horaPartido.minusMinutes(15))) {
-          throw new TiempoLimiteException("El tiempo límite expiró. Solo puedes modificar hasta 15 min antes.");
+          if (golesLocal < 0 || golesVisitante < 0) {
+            throw new FormatoGolesInvalidoException("Los goles no pueden ser negativos.");
+          }
+
+          // STREAMS: Buscamos el partido específico en la lista que ya tenemos en memoria
+          Partido partidoInfo = partidosDeLaJornada.stream()
+              .filter(p -> p.getIdPartido() == idPartido)
+              .findFirst()
+              .orElse(null);
+
+          if (partidoInfo == null) continue;
+
+          // ESCENARIO 3: Regla de los 15 minutos.
+          // En vez de lanzar la excepción y frenar todo, ignoramos los partidos bloqueados.
+          if (ahora.isAfter(partidoInfo.getFechaHora().minusMinutes(15))) {
+            continue;
+          }
+
+          // Consultamos si el usuario ya tenía una jugada para este partido
+          Jugada jugadaExistente = jugadaDAO.getByUserAndMatch(usuarioLogueado.getIdUsuario(), idPartido);
+
+          if (jugadaExistente != null) {
+            // ESCENARIO 2: Solo hacemos UPDATE si el usuario realmente cambió los números
+            if (jugadaExistente.getGolesLocal() != golesLocal || jugadaExistente.getGolesVisitante() != golesVisitante) {
+              jugadaExistente.setGolesLocal(golesLocal);
+              jugadaExistente.setGolesVisitante(golesVisitante);
+              jugadaDAO.update(jugadaExistente);
+              pronosticosGuardados++;
+            }
+          } else {
+            // INSERCIÓN: Jugada totalmente nueva
+            Jugada nueva = new Jugada();
+            nueva.setUsuario(usuarioLogueado);
+            Partido p = new Partido();
+            p.setIdPartido(idPartido);
+            nueva.setPartido(p);
+            nueva.setGolesLocal(golesLocal);
+            nueva.setGolesVisitante(golesVisitante);
+
+            jugadaDAO.insert(nueva);
+            pronosticosGuardados++;
+          }
+
+        } catch (NumberFormatException e) {
+          errores.add("Formato inválido en el partido " + idPartido);
+        } catch (FormatoGolesInvalidoException e) {
+          errores.add("Partido " + idPartido + ": " + e.getMessage());
         }
       }
 
-      if (jugadaExistente != null) {
-        // ACTUALIZACIÓN (Escenario 2)
-        jugadaExistente.setGolesLocal(golesLocal);
-        jugadaExistente.setGolesVisitante(golesVisitante);
-        jugadaDAO.update(jugadaExistente);
-        request.setAttribute("mensaje", "¡Pronóstico modificado con éxito!");
-      } else {
-        // INSERCIÓN
-        Jugada nueva = new Jugada();
-        nueva.setUsuario(usuarioLogueado);
-        Partido p = new Partido();
-        p.setIdPartido(idPartido);
-        nueva.setPartido(p);
-        nueva.setGolesLocal(golesLocal);
-        nueva.setGolesVisitante(golesVisitante);
-
-        jugadaDAO.insert(nueva);
-        request.setAttribute("mensaje", "¡Jugada registrada con éxito!");
+      // Preparamos los mensajes de feedback dinámicos para la vista
+      if (pronosticosGuardados > 0) {
+        request.setAttribute("mensaje", "¡Se guardaron " + pronosticosGuardados + " pronósticos correctamente!");
+      } else if (errores.isEmpty()) {
+        request.setAttribute("mensaje", "No hubo cambios nuevos para guardar.");
       }
 
-    } catch (FormatoGolesInvalidoException | PartidoYaComenzadoException | TiempoLimiteException e) {
-      request.setAttribute("error", e.getMessage());
+      if (!errores.isEmpty()) {
+        request.setAttribute("error", "Inconvenientes detectados: " + String.join(", ", errores));
+      }
+
     } catch (Exception e) {
-      request.setAttribute("error", "Error en el sistema: " + e.getMessage());
+      request.setAttribute("error", "Error general en el guardado: " + e.getMessage());
     }
 
+    // Volvemos a procesar la pantalla
     processRequest(request, response);
   }
 
@@ -154,6 +185,8 @@ public class JugadaServlet extends HttpServlet {
         request.setAttribute("totalJornadas", fechasDisponibles.size());
         request.setAttribute("fechaActualLabel", fechaSeleccionada);
       }
+
+      request.setAttribute("tiempoLimite", LocalDateTime.now().plusMinutes(15));
 
       request.getRequestDispatcher("jugar.jsp").forward(request, response);
 

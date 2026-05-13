@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ page isELIgnored="false" %>
 
 <!doctype html>
 <html lang="es">
@@ -85,16 +87,24 @@
 <main class="mainCambiarContraseña">
     <form class="formCambiarContraseña" action="ServletUsuario" method="POST">
 
-    <label name="contraseñaActual">CONTRASEÑA ACTUAL</label>
-    <input type="password" name="contraseñaActual" id="contraseñaActual" placeholder="Contraseña Actual">
+    <input type="hidden" name="operacion" value="actualizarPassword">
+
+    <label name="passwordActual">CONTRASEÑA ACTUAL</label>
+    <input type="password" name="passwordActual" id="contraseñaActual" placeholder="Contraseña Actual">
     <br>
-    <label name="contraseñaNueva">CONTRASEÑA NUEVA</label>
-    <input type="password" name="contraseñaNueva" id="contraseñaNueva" placeholder="Contraseña Nueva">
+    <label name="passwordNueva">CONTRASEÑA NUEVA</label>
+    <input type="password" name="passwordNueva" id="contraseñaNueva" placeholder="Contraseña Nueva">
     <br>
-    <label name="repetirContraseñaNueva"> REPETIR CONTRASEÑA NUEVA</label>
-    <input type="password" name="repetirContraseñaNueva" id="repetirContraseñaNueva" placeholder="Repetir Contraseña Nueva">
+    <label name="repetirpasswordNueva"> REPETIR CONTRASEÑA NUEVA</label>
+    <input type="password" name="repetirPasswordNueva" id="repetirContraseñaNueva" placeholder="Repetir Contraseña Nueva">
     <br>
-    <button class="btnActualizarContraseña">ACTUALIZAR CONTRASEÑA</button>
+    <button type="submit" class="btnActualizarContraseña">ACTUALIZAR CONTRASEÑA</button>
+
+    <c:if test="${not empty error}">
+        <div class="alert alert-danger mt-3">
+            ${error}
+        </div>
+    </c:if>
     </form>
 
 </main>

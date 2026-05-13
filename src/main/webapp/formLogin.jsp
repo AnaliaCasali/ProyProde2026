@@ -55,7 +55,7 @@
                             </div>
                         </c:if>
 
-                        <form action="SesionServlet" method="post">
+                        <form action="sesion" method="post">
                             <div class="mb-3">
                                 <label for="email" class="form-label">
                                     Correo Electrónico <span class="text-danger">*</span>

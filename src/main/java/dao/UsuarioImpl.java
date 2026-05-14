@@ -2,6 +2,7 @@ package dao;
 
 import entities.Usuario;
 import enums.TipoUsuario;
+import enums.Carrera;
 import interfaces.AdmConexion;
 import interfaces.DAO;
 
@@ -19,17 +20,17 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
   // CONSULTAS SQL
   // insert general
   private static final String SQL_INSERT =
-      "INSERT INTO usuarios (email, password, curso, tipo, carrera, nombreGrupo)" +
+      "INSERT INTO usuarios (email, password, tipo, curso, carrera, nombreGrupo)" +
           "VALUES (?, ?, ?, ?, ?, ?)";
 
   // update general
   private static final String SQL_UPDATE =
       "UPDATE usuarios SET " +
-          "email = ? , password ? , curso = ? , carrera = ? , nombreGrupo)" +
+          "email = ?, password = ?, tipo = ?, curso = ?, carrera = ?, nombreGrupo = ? " +
           "WHERE idUsuario = ?";
 
   private static final String SQL_DELETE =
-      "DELETE * FROM usuarios WHERE idUsuario = ?";
+      "DELETE FROM usuarios WHERE idUsuario = ?";
 
   private static final String SQL_GETALL =
       "SELECT * FROM usuarios ORDER BY idUsuario";
@@ -63,7 +64,7 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
         usuario.setPassword(rs.getString("password"));
         usuario.setTipo(TipoUsuario.valueOf(rs.getString("tipo")));
         usuario.setCurso(rs.getString("curso"));
-        usuario.setCarrera(rs.getString("carrera"));
+        usuario.setCarrera(Carrera.valueOf(rs.getString("carrera")));
         usuario.setNombreGrupo(rs.getString("nombreGrupo"));
         listaUsuarios.add(usuario);
       }
@@ -93,7 +94,7 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
       pst.setString(2, usuario.getPassword());
       pst.setString(3, usuario.getTipo().toString());
       pst.setString(4, usuario.getCurso());
-      pst.setString(5, usuario.getCarrera());
+      pst.setString(5, usuario.getCarrera().toString());
       pst.setString(6, usuario.getNombreGrupo());
 
       int resultado = pst.executeUpdate();
@@ -114,7 +115,7 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
 
   @Override
   public void update(Usuario objeto) {
-    Usuario usuario = new Usuario();
+    Usuario usuario = objeto;
 
     if (this.existsById(usuario.getIdUsuario())) {
       conn = obtenerConexion();
@@ -127,8 +128,10 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
         pst.setString(2, usuario.getPassword());
         pst.setString(3, usuario.getTipo().toString());
         pst.setString(4, usuario.getCurso());
-        pst.setString(5, usuario.getCarrera());
+        pst.setString(5, usuario.getCarrera().toString());
         pst.setString(6, usuario.getNombreGrupo());
+
+        pst.setInt(7, usuario.getIdUsuario());
 
         int resultado = pst.executeUpdate();
         if (resultado == 1) {
@@ -191,7 +194,7 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
         usuario.setPassword(rs.getString("password"));
         usuario.setTipo(TipoUsuario.valueOf(rs.getString("tipo")));
         usuario.setCurso(rs.getString("curso"));
-        usuario.setCarrera(rs.getString("carrera"));
+        usuario.setCarrera(Carrera.valueOf(rs.getString("carrera")));
         usuario.setNombreGrupo(rs.getString("nombreGrupo"));
       }
 
@@ -251,7 +254,7 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
         usuario.setPassword(rs.getString("password"));
         usuario.setTipo(TipoUsuario.valueOf(rs.getString("tipo")));
         usuario.setCurso(rs.getString("curso"));
-        usuario.setCarrera(rs.getString("carrera"));
+        usuario.setCarrera(Carrera.valueOf(rs.getString("carrera")));
         usuario.setNombreGrupo(rs.getString("nombreGrupo"));
       }
 
@@ -289,5 +292,47 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
       throw new RuntimeException(e);
     }
     return existe;
+  }
+
+  // metodo para obtener ranking basado en puntaje usuarios
+  public List<Usuario> obtenerRankingUsuarios() {
+    conn = obtenerConexion();
+
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+    List<Usuario> listaRanking = new ArrayList<>();
+
+    String sqlRanking = "SELECT u.idUsuario, u.email, u.carrera, SUM(j.puntaje) AS puntajeTotal " +
+        "FROM usuarios u " +
+        "INNER JOIN jugadas j ON u.idUsuario = j.idUsuario " +
+        "GROUP BY u.idUsuario, u.email, u.carrera " +
+        "ORDER BY puntajeTotal DESC";
+
+    try {
+      pst = conn.prepareStatement(sqlRanking);
+      rs = pst.executeQuery();
+
+      while (rs.next()) {
+        Usuario u = new Usuario();
+        u.setIdUsuario(rs.getInt("idUsuario"));
+        u.setEmail(rs.getString("email"));
+        String carreraBD = rs.getString("carrera");
+        if (carreraBD != null && !carreraBD.isEmpty()) {
+          u.setCarrera(Carrera.valueOf(carreraBD));
+        }
+
+        u.setPuntajeTotal(rs.getInt("puntajeTotal"));
+
+        listaRanking.add(u);
+      }
+
+      rs.close();
+      pst.close();
+      conn.close();
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    return listaRanking;
   }
 }

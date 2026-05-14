@@ -34,7 +34,7 @@ public class PartidoDAO implements AdmConexion, DAO<Partido, Integer> {
   private static final String SQL_DELETE = "DELETE FROM partidos WHERE idPartido = ?";
 
   //Tengo que usar varios JOINS para el GetAll debido a que tiene muchos elementos de otras tablas (Equipos, Etapa y Estadio).
-  private static final String SQL_GETALL =
+  public static final String SQL_GETALL =
       "SELECT p.*, " +
           "el.nombre AS local_nombre, el.icono AS local_icono, el.grupo AS local_grupo, " +
           "ev.nombre AS visitante_nombre, ev.icono AS visitante_icono, ev.grupo AS visitante_grupo, " +

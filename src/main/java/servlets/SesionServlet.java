@@ -4,6 +4,7 @@ import dao.UsuarioImpl;
 import entities.Usuario;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +15,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServletSesion extends HttpServlet {
+@WebServlet("/sesion")
+
+public class SesionServlet extends HttpServlet {
 
   private UsuarioImpl usuarioDAO = new UsuarioImpl();
   // hashmap para almacenar los usuarios con sesion iniciada
@@ -81,14 +84,14 @@ public class ServletSesion extends HttpServlet {
     Usuario usuario = usuarioDAO.getByEmail(email);
 
     if (usuario == null) {
-      req.setAttribute("mensajeError", "Credenciales no válidas.");
+      req.setAttribute("mensajeError", "Email y/o contraseña incorrecta.");
       return "formLogin.jsp";
     }
 
     // verificar contraseña con BCrypt, con manejo de errores
     try {
       if (!PasswordUtil.verifyPassword(password, usuario.getPassword())) {
-        req.setAttribute("mensajeError", "Credenciales no válidas.");
+        req.setAttribute("mensajeError", "Email y/o contraseña incorrecta.");
         return "formLogin.jsp";
       }
     } catch (Exception e) {

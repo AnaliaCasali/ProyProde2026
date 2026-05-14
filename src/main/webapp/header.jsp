@@ -54,8 +54,8 @@
         <div class="list-group list-group-flush">
           <a href="index.jsp" class="list-group-item list-group-item-action">Inicio</a>
           <a href="jugar.jsp" class="list-group-item list-group-item-action">Jugar</a>
-          <a href="ranking.jsp" class="list-group-item list-group-item-action">Ranking</a>
-          <a href="fixture.jsp" class="list-group-item list-group-item-action">Fixture</a>
+          <a href="usuarios?accion=rankingGeneral" class="list-group-item list-group-item-action">Ranking</a>
+          <a href="PartidoServlet?accion=fixture" class="list-group-item list-group-item-action">Fixture</a>
         </div>
       </div>
     </div>

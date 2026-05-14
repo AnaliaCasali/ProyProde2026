@@ -8,11 +8,11 @@
         <i class="bi bi-controller"></i>
         <span>Jugar</span>
       </a>
-      <a href="fixture.jsp">
+      <a href="PartidoServlet?accion=fixture">
         <i class="bi bi-calendar3"></i>
         <span>Fixture</span>
       </a>
-      <a href="ranking.jsp">
+      <a href="usuarios?accion=rankingGeneral">
         <i class="bi bi-trophy"></i>
         <span>Ranking</span>
       </a>

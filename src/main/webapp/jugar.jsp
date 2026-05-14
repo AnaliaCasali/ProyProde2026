@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<jsp:include page="/header.jsp" />
 <body class="hero-inicio"> <div class="container mt-lg-5 mt-3">
 
     <div class="capsula-prode d-flex justify-content-between align-items-center mb-4 px-4 py-3 shadow-sm">
@@ -71,7 +72,7 @@
                         <div class="text-center mb-2">
                             <small class="text-muted fw-semibold">
                                 <i class="fas fa-map-marker-alt me-1 color-identidad-secundario"></i>
-                                <c:out value="${partido.estadio.nombreEstadio}"/> | <c:out value="${partido.estadio.pais}"/>
+                                <c:out value="${partido.estadio.estadio}"/> | <c:out value="${partido.estadio.pais}"/>
                             </small>
                         </div>
 

@@ -19,8 +19,6 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
       "UPDATE Jugadas SET golesLocal = ?, golesVisitante = ? WHERE idJugada = ?";
   private static final String SQL_DELETE =
       "DELETE FROM Jugadas WHERE idJugada = ?";
-
-  // CORRECCIÓN: Agrego fechaHora para el Escenario 3 y los íconos para el JSP
   private static final String SQL_GETALL =
       "SELECT j.idJugada, j.idUsuario, j.idPartido, j.golesLocal, j.golesVisitante, j.puntaje, " +
           "el.nombre AS nombreLocal, el.icono AS iconoLocal, " +
@@ -225,7 +223,6 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
     return jugada;
   }
 
-  // MÉTODO RESTAURADO: El Servlet lo necesita para cargar la pantalla "Jugar"
   public List<Jugada> getByEtapa(int idUsuario, int idEtapa) {
     List<Jugada> listaPorEtapa = new ArrayList<>();
     try (Connection conn = obtenerConexion();
@@ -248,8 +245,6 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
   public List<Partido> getPartidosByJornada(int nroJornada) {
     List<Partido> lista = new ArrayList<>();
-
-    // CORRECCIÓN: Agregados el.idEquipo AS idLocal y ev.idEquipo AS idVisitante
     String sql = "SELECT p.idPartido, p.idEtapa, p.fechaHora, " +
         "el.idEquipo AS idLocal, el.nombre AS nombreLocal, el.icono AS iconoLocal, " +
         "ev.idEquipo AS idVisitante, ev.nombre AS nombreVisitante, ev.icono AS iconoVisitante, " +
@@ -305,34 +300,56 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
   public List<Partido> getAllPartidos() {
     List<Partido> lista = new ArrayList<>();
     String sql = "SELECT p.idPartido, p.idEtapa, p.fechaHora, " +
-        "el.nombre AS nombreLocal, el.icono AS iconoLocal, " +
-        "ev.nombre AS nombreVisitante, ev.icono AS iconoVisitante " +
+        "el.idEquipo AS idLocal, el.nombre AS nombreLocal, el.icono AS iconoLocal, " +
+        "ev.idEquipo AS idVisitante, ev.nombre AS nombreVisitante, ev.icono AS iconoVisitante, " +
+        "est.estadio, est.pais " +
         "FROM Partidos p " +
         "INNER JOIN Equipos el ON p.equipoLocal = el.idEquipo " +
         "INNER JOIN Equipos ev ON p.equipoVisitante = ev.idEquipo " +
+        "LEFT JOIN Estadios est ON p.idEstadio = est.idEstadio " +
         "ORDER BY p.fechaHora ASC";
+
     try (Connection conn = obtenerConexion();
          PreparedStatement ps = conn.prepareStatement(sql);
          ResultSet rs = ps.executeQuery()) {
+
       while (rs.next()) {
         Partido p = new Partido();
         p.setIdPartido(rs.getInt("idPartido"));
-        p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
 
+        // Seteamos la Etapa por si la necesitamos
+        Etapa e = new Etapa();
+        e.setIdEtapa(rs.getInt("idEtapa"));
+        p.setEtapa(e);
+
+        if (rs.getTimestamp("fechaHora") != null) {
+          p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+        }
+
+        // Mapeo Equipo Local
         Equipo loc = new Equipo();
+        loc.setIdEquipo(rs.getInt("idLocal"));
         loc.setNombre(rs.getString("nombreLocal"));
         loc.setIcono(rs.getString("iconoLocal"));
         p.setEquipoLocal(loc);
 
+        // Mapeo Equipo Visitante
         Equipo vis = new Equipo();
+        vis.setIdEquipo(rs.getInt("idVisitante"));
         vis.setNombre(rs.getString("nombreVisitante"));
         vis.setIcono(rs.getString("iconoVisitante"));
         p.setEquipoVisitante(vis);
 
+        // Mapeo Estadio
+        Estadio estadio = new Estadio();
+        estadio.setEstadio(rs.getString("estadio"));
+        estadio.setPais(rs.getString("pais"));
+        p.setEstadio(estadio);
+
         lista.add(p);
       }
     } catch (SQLException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Error al recuperar todos los partidos con sus estadios", e);
     }
     return lista;
   }

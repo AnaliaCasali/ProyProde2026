@@ -5,8 +5,6 @@ import entities.Jugada;
 import entities.Partido;
 import entities.Usuario;
 import exceptions.FormatoGolesInvalidoException;
-import exceptions.PartidoYaComenzadoException;
-import exceptions.TiempoLimiteException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -36,7 +34,7 @@ public class JugadaServlet extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
     if (usuarioLogueado == null) {
-      response.sendRedirect("login.jsp");
+      response.sendRedirect("formLogin.jsp");
       return;
     }
 
@@ -44,14 +42,14 @@ public class JugadaServlet extends HttpServlet {
     List<String> errores = new ArrayList<>();
 
     try {
-      // 1. Capturamos la jornada actual del input oculto
+      // Capturamos la jornada actual del input oculto
       String jornadaActualStr = request.getParameter("jornadaActual");
       int jornadaActual = (jornadaActualStr != null && !jornadaActualStr.isEmpty()) ? Integer.parseInt(jornadaActualStr) : 1;
 
-      // 2. Traemos los partidos de esta fecha de una sola vez para no sobrecargar la base de datos
+      // Traemos los partidos de esta fecha de una sola vez para no sobrecargar la base de datos
       List<Partido> partidosDeLaJornada = jugadaDAO.getPartidosByJornada(jornadaActual);
 
-      // 3. STREAMS: Obtenemos todos los parámetros del request, filtramos los goles locales y extraemos el ID
+      // STREAMS: Obtenemos todos los parámetros del request, filtramos los goles locales y extraemos el ID
       List<Integer> idsPartidosFormulario = java.util.Collections.list(request.getParameterNames()).stream()
           .filter(param -> param.startsWith("golesL_"))
           .map(param -> Integer.parseInt(param.split("_")[1])) // Cortamos "golesL_12" para quedarnos con el "12"
@@ -59,7 +57,7 @@ public class JugadaServlet extends HttpServlet {
 
       LocalDateTime ahora = LocalDateTime.now();
 
-      // 4. Procesamos cada partido que vino en el formulario
+      //  Procesamos cada partido que vino en el formulario
       for (Integer idPartido : idsPartidosFormulario) {
         try {
           String strGolesL = request.getParameter("golesL_" + idPartido);
@@ -85,7 +83,6 @@ public class JugadaServlet extends HttpServlet {
 
           if (partidoInfo == null) continue;
 
-          // ESCENARIO 3: Regla de los 15 minutos.
           // En vez de lanzar la excepción y frenar todo, ignoramos los partidos bloqueados.
           if (ahora.isAfter(partidoInfo.getFechaHora().minusMinutes(15))) {
             continue;
@@ -95,7 +92,7 @@ public class JugadaServlet extends HttpServlet {
           Jugada jugadaExistente = jugadaDAO.getByUserAndMatch(usuarioLogueado.getIdUsuario(), idPartido);
 
           if (jugadaExistente != null) {
-            // ESCENARIO 2: Solo hacemos UPDATE si el usuario realmente cambió los números
+            // Solo hacemos UPDATE si el usuario realmente cambió los números
             if (jugadaExistente.getGolesLocal() != golesLocal || jugadaExistente.getGolesVisitante() != golesVisitante) {
               jugadaExistente.setGolesLocal(golesLocal);
               jugadaExistente.setGolesVisitante(golesVisitante);
@@ -103,7 +100,7 @@ public class JugadaServlet extends HttpServlet {
               pronosticosGuardados++;
             }
           } else {
-            // INSERCIÓN: Jugada totalmente nueva
+            // Jugada totalmente nueva
             Jugada nueva = new Jugada();
             nueva.setUsuario(usuarioLogueado);
             Partido p = new Partido();
@@ -146,7 +143,7 @@ public class JugadaServlet extends HttpServlet {
     Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
 
     if (usuarioLogueado == null) {
-      response.sendRedirect("login.jsp");
+      response.sendRedirect("formLogin.jsp");
       return;
     }
 
@@ -155,7 +152,7 @@ public class JugadaServlet extends HttpServlet {
       int puntosTotales = jugadaDAO.getPuntosTotalesPorUsuario(usuarioLogueado.getIdUsuario());
       request.setAttribute("puntosTotales", puntosTotales);
 
-      // 2. Agrupamiento de jornadas por fecha (Lógica de tu compañero con Streams)
+      // 2. Agrupamiento de jornadas por fecha
       List<Partido> todosLosPartidos = jugadaDAO.getAllPartidos();
 
       Map<LocalDate, List<Partido>> jornadasPorFecha = todosLosPartidos.stream()
@@ -175,9 +172,15 @@ public class JugadaServlet extends HttpServlet {
         int index = Math.max(1, Math.min(indiceJornada, fechasDisponibles.size())) - 1;
         LocalDate fechaSeleccionada = fechasDisponibles.get(index);
 
-        // ESCENARIO 1: Carga de jugadas del usuario para pre-completar los campos
-        // Usamos el index+1 como idEtapa para sincronizar con tu DAO
+        //  Carga de jugadas del usuario para pre-completar los campos
         List<Jugada> listaJugadas = jugadaDAO.getByEtapa(usuarioLogueado.getIdUsuario(), index + 1);
+
+        Map<Integer, Jugada> mapaJugadas = listaJugadas.stream()
+            .collect(Collectors.toMap(
+                j -> j.getPartido().getIdPartido(),
+                j -> j,
+                (j1, j2) -> j1
+            ));
 
         request.setAttribute("listaPartidosJornada", jornadasPorFecha.get(fechaSeleccionada));
         request.setAttribute("listaJugadas", listaJugadas);

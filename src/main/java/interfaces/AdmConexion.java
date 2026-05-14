@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public interface AdmConexion {
 
-    default Connection obtenerConexion() {
+  default Connection obtenerConexion() {
 
     	/*
 		# Comentarios
@@ -16,37 +16,37 @@ public interface AdmConexion {
 		db.url=jdbc:jdbc:mysql://localhost:3306/prode
 		db.user=root
 		db.pass=root */
-        Connection conn =null;
+    Connection conn =null;
 
-        Properties dbProperties=new Properties();
-        try {
-            // cargamos el archivo utilizando la ruta relativa donde esta el proyecto
-            dbProperties.load(Thread.currentThread().
-                    getContextClassLoader()
-                    .getResourceAsStream("database.properties"));
+    Properties dbProperties=new Properties();
+    try {
+      // cargamos el archivo utilizando la ruta relativa donde esta el proyecto
+      dbProperties.load(Thread.currentThread().
+          getContextClassLoader()
+          .getResourceAsStream("database.properties"));
 
-            // leemos las propiedades
-            String driver = dbProperties.getProperty("db.driver");
-            String cadenaConexion= dbProperties.getProperty("db.url");
-            String usuario= dbProperties.getProperty("db.user", "root");
-            String pass= dbProperties.getProperty("db.pass");
+      // leemos las propiedades
+      String driver = dbProperties.getProperty("db.driver");
+      String cadenaConexion= dbProperties.getProperty("db.url");
+      String usuario= dbProperties.getProperty("db.user", "root");
+      String pass= dbProperties.getProperty("db.pass");
 
-            Class.forName(driver);
-            conn = DriverManager.
-                    getConnection(cadenaConexion,usuario, pass);
+      Class.forName(driver);
+      conn = DriverManager.
+          getConnection(cadenaConexion,usuario, pass);
 
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }		 catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+    } catch (SQLException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }		 catch (ClassNotFoundException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
 
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();}
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();}
 
-        return conn;
+    return conn;
 
-    }
+  }
 }

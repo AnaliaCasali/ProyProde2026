@@ -193,54 +193,243 @@ body {
     max-width: 300px;
   }
 }
-
-/*ESTILOS INFORMACION DE LA CUENTA*/
-
-.mainInformacionDeLaCuenta{
-   background: linear-gradient(180deg,var(--afa-celeste) 0%,var(--bg-principal) 100%);
-   font-family: "Montserrat", sans-serif;
+/* ========================= */
+/* COMO JUGAR */
+/* ========================= */
+.card-como-jugar {
+  background-color: var(--afa-blanco);
+  border-radius: 25px;
+  padding: 30px 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  max-width: 850px;
+  margin: auto;
 }
 
-.divInformacionDeLaCuenta{
-   display:flex;
-   align-items:center;
-   justify-content:center;
-   min-height: 80vh;
+.titulo-seccion {
+  color: var(--afa-azul-oscuro);
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
-.btnCambiarContraseña{
-   text-decoration:none;
-   background-color:white;
-   color:black;
-   border:1px solid black;
-   border-radius:8px;
-   padding:10px 50px 10px 50px;
-   font-weight: bold;
+.subtitulo {
+  text-align: center;
+  color: #666;
+  margin-bottom: 30px;
 }
 
-/* ESTILOS CAMBIAR CONTRASEÑA*/
-.mainCambiarContraseña{
-   background: linear-gradient(180deg,var(--afa-celeste) 0%,var(--bg-principal) 100%);
-   display:flex;
-   align-items:center;
-   justify-content:center;
-   min-height: 80vh;
+/* ========================= */
+/* REGLAS */
+/* ========================= */
+
+.regla-box {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: #f8f9fa;
+  border-left: 5px solid var(--afa-celeste);
+  border-radius: 15px;
+  padding: 18px;
+  margin-bottom: 18px;
 }
 
-.formCambiarContraseña{
-    background:white;
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    border-radius:8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+.icono-regla {
+  font-size: 2rem;
+  color: var(--afa-azul-oscuro);
 }
 
-.btnActualizarContraseña{
-    background-color: var(--afa-amarillo);
-    color: var(--afa-azul-oscuro);
-    font-weight: bold;
-    border:0px;
-    border-radius: 50px;
-    padding: 10px 30px;
+.regla-box h3 {
+  margin-bottom: 5px;
+  color: var(--afa-azul-oscuro);
+}
+.subtitulo {
+  text-align: center;              /* Centrado */
+  color: #003366;                  /* Azul oscuro (AFA) */
+  font-weight: 700;                /* Negrita (Bold) */
+  font-size: 1.2rem;               /* Un poco más grande */
+  letter-spacing: 1px;             /* Espacio entre letras moderno */
+  margin-bottom: 30px;             /* Espacio inferior */
+
+}
+
+/* ========================= */
+/* CONTENEDOR DE EJEMPLOS */
+/* ========================= */
+
+.contenedor-ejemplos {
+  background-color: #f8f9fa;
+  border-radius: 20px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.ejemplo-item {
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 18px;
+}
+
+.ejemplo-item:last-child {
+  margin-bottom: 0;
+}
+
+.ejemplo-item h3 {
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.ejemplo-item p {
+  margin-bottom: 5px;
+}
+
+.ejemplos-capsula {
+  /* Fondo: un azul*/
+  background-color: rgba(0, 123, 255, 0.1);
+
+  /* Borde: un azul sólido */
+  border: 2px solid #007bff;
+
+  /* Bordes redondeados */
+  border-radius: 20px;
+
+  /* Padding para que el contenido no toque los bordes */
+  padding: 15px;
+}
+/* ========================= */
+/* COLORES DE RESULTADOS */
+/* ========================= */
+
+.acierto-total {
+  background-color: rgba(40, 167, 69, 0.12);
+  border: 2px solid #28a745;
+}
+
+ .solo-resultado {
+  background-color: rgba(255, 193, 7, 0.15);
+  border: 2px solid #ffc107;
+}
+
+.acierto-parcial{
+  background-color: rgba(23, 162, 184, 0.12);
+  border: 2px solid #17a2b8;
+}
+
+.ningun-resultado {
+  background-color: #ffe5e9;
+  border: 2px solid #f5a3b3;
+}
+
+/* ========================= */
+/* PUNTOS */
+/* ========================= */
+
+.puntos-box {
+  margin-top: 15px;
+  background-color: var(--afa-azul-oscuro);
+  color: var(--afa-amarillo);
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+/* ========================= */
+/* BOTON */
+/* ========================= */
+
+.btn-volver {
+  display: inline-block;
+  margin-top: 30px;
+  text-decoration: none;
+  background-color: var(--afa-amarillo);
+  color: var(--afa-azul-oscuro);
+  font-weight: 700;
+  padding: 12px 22px;
+  border-radius: 50px;
+  transition: 0.3s;
+}
+
+.btn-volver:hover {
+  transform: translateY(-2px);
+}
+
+/* ========================= */
+/* ADMIN - CARGA PARTIDOS */
+/* ========================= */
+
+.admin-panel {
+  background-color: var(--afa-blanco);
+  border: 1px solid rgba(116, 172, 223, 0.35);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
+  max-width: 920px;
+  padding: 24px;
+}
+
+.admin-panel-header {
+  align-items: flex-start;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+}
+
+.admin-panel-header h1 {
+  color: var(--afa-azul-oscuro);
+  font-size: 1.6rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.admin-eyebrow {
+  color: #667085;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.admin-badge {
+  background-color: var(--afa-azul-oscuro);
+  border-radius: 8px;
+  color: var(--afa-amarillo);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+.admin-form .form-label {
+  color: var(--afa-azul-oscuro);
+  font-weight: 700;
+}
+
+.admin-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+@media (max-width: 576px) {
+  .admin-panel {
+    padding: 18px;
+  }
+
+  .admin-panel-header {
+    display: block;
+  }
+
+  .admin-badge {
+    display: inline-block;
+    margin-top: 12px;
+  }
+
+  .admin-actions .btn {
+    width: 100%;
+  }
 }

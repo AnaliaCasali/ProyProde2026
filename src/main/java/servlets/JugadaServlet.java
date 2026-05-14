@@ -4,6 +4,9 @@ import dao.JugadaDAO;
 import entities.Jugada;
 import entities.Partido;
 import entities.Usuario;
+import exceptions.FormatoGolesInvalidoException;
+import exceptions.PartidoYaComenzadoException;
+import exceptions.TiempoLimiteException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,9 +15,12 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @WebServlet("/jugar")
 public class JugadaServlet extends HttpServlet {
@@ -29,42 +35,113 @@ public class JugadaServlet extends HttpServlet {
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
-
-    // Capturar datos del formulario
-    int idPartido = Integer.parseInt(request.getParameter("idPartido"));
-    int golesLocal = Integer.parseInt(request.getParameter("golesLocal"));
-    int golesVisitante = Integer.parseInt(request.getParameter("golesVisitante"));
-
-    try {
-      Jugada nueva = new Jugada();
-      nueva.setUsuario(usuarioLogueado);
-
-      Partido p = new Partido();
-      p.setIdPartido(idPartido);
-      nueva.setPartido(p);
-
-      nueva.setGolesLocal(golesLocal);
-      nueva.setGolesVisitante(golesVisitante);
-
-      // Ejecutar la funcionalidad: REGISTRAR
-      jugadaDAO.insert(nueva);
-
-      // Notificar éxito
-      request.setAttribute("mensaje", "¡Jugada registrada con éxito!");
-
-    } catch (Exception e) {
-      request.setAttribute("error", "No se pudo registrar la jugada: " + e.getMessage());
+    if (usuarioLogueado == null) {
+      response.sendRedirect("login.jsp");
+      return;
     }
 
-    // IMPORTANTE: Volver a procesar la carga de datos para mostrar el banner actualizado
+    int pronosticosGuardados = 0;
+    List<String> errores = new ArrayList<>();
+
+    try {
+      // 1. Capturamos la jornada actual del input oculto
+      String jornadaActualStr = request.getParameter("jornadaActual");
+      int jornadaActual = (jornadaActualStr != null && !jornadaActualStr.isEmpty()) ? Integer.parseInt(jornadaActualStr) : 1;
+
+      // 2. Traemos los partidos de esta fecha de una sola vez para no sobrecargar la base de datos
+      List<Partido> partidosDeLaJornada = jugadaDAO.getPartidosByJornada(jornadaActual);
+
+      // 3. STREAMS: Obtenemos todos los parámetros del request, filtramos los goles locales y extraemos el ID
+      List<Integer> idsPartidosFormulario = java.util.Collections.list(request.getParameterNames()).stream()
+          .filter(param -> param.startsWith("golesL_"))
+          .map(param -> Integer.parseInt(param.split("_")[1])) // Cortamos "golesL_12" para quedarnos con el "12"
+          .collect(java.util.stream.Collectors.toList());
+
+      LocalDateTime ahora = LocalDateTime.now();
+
+      // 4. Procesamos cada partido que vino en el formulario
+      for (Integer idPartido : idsPartidosFormulario) {
+        try {
+          String strGolesL = request.getParameter("golesL_" + idPartido);
+          String strGolesV = request.getParameter("golesV_" + idPartido);
+
+          // Si el usuario borró el número y lo dejó en blanco, saltamos este partido
+          if (strGolesL == null || strGolesL.isEmpty() || strGolesV == null || strGolesV.isEmpty()) {
+            continue;
+          }
+
+          int golesLocal = Integer.parseInt(strGolesL);
+          int golesVisitante = Integer.parseInt(strGolesV);
+
+          if (golesLocal < 0 || golesVisitante < 0) {
+            throw new FormatoGolesInvalidoException("Los goles no pueden ser negativos.");
+          }
+
+          // STREAMS: Buscamos el partido específico en la lista que ya tenemos en memoria
+          Partido partidoInfo = partidosDeLaJornada.stream()
+              .filter(p -> p.getIdPartido() == idPartido)
+              .findFirst()
+              .orElse(null);
+
+          if (partidoInfo == null) continue;
+
+          // ESCENARIO 3: Regla de los 15 minutos.
+          // En vez de lanzar la excepción y frenar todo, ignoramos los partidos bloqueados.
+          if (ahora.isAfter(partidoInfo.getFechaHora().minusMinutes(15))) {
+            continue;
+          }
+
+          // Consultamos si el usuario ya tenía una jugada para este partido
+          Jugada jugadaExistente = jugadaDAO.getByUserAndMatch(usuarioLogueado.getIdUsuario(), idPartido);
+
+          if (jugadaExistente != null) {
+            // ESCENARIO 2: Solo hacemos UPDATE si el usuario realmente cambió los números
+            if (jugadaExistente.getGolesLocal() != golesLocal || jugadaExistente.getGolesVisitante() != golesVisitante) {
+              jugadaExistente.setGolesLocal(golesLocal);
+              jugadaExistente.setGolesVisitante(golesVisitante);
+              jugadaDAO.update(jugadaExistente);
+              pronosticosGuardados++;
+            }
+          } else {
+            // INSERCIÓN: Jugada totalmente nueva
+            Jugada nueva = new Jugada();
+            nueva.setUsuario(usuarioLogueado);
+            Partido p = new Partido();
+            p.setIdPartido(idPartido);
+            nueva.setPartido(p);
+            nueva.setGolesLocal(golesLocal);
+            nueva.setGolesVisitante(golesVisitante);
+
+            jugadaDAO.insert(nueva);
+            pronosticosGuardados++;
+          }
+
+        } catch (NumberFormatException e) {
+          errores.add("Formato inválido en el partido " + idPartido);
+        } catch (FormatoGolesInvalidoException e) {
+          errores.add("Partido " + idPartido + ": " + e.getMessage());
+        }
+      }
+
+      // Preparamos los mensajes de feedback dinámicos para la vista
+      if (pronosticosGuardados > 0) {
+        request.setAttribute("mensaje", "¡Se guardaron " + pronosticosGuardados + " pronósticos correctamente!");
+      } else if (errores.isEmpty()) {
+        request.setAttribute("mensaje", "No hubo cambios nuevos para guardar.");
+      }
+
+      if (!errores.isEmpty()) {
+        request.setAttribute("error", "Inconvenientes detectados: " + String.join(", ", errores));
+      }
+
+    } catch (Exception e) {
+      request.setAttribute("error", "Error general en el guardado: " + e.getMessage());
+    }
+
+    // Volvemos a procesar la pantalla
     processRequest(request, response);
   }
 
-  /**
-   * Método auxiliar encargado de centralizar la carga de datos para la vista jugar.jsp.
-   * Se utiliza tanto en doGet como en doPost para asegurar que la vista siempre tenga
-   * la información actualizada de puntos, jornadas y partidos.
-   */
   private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
 
@@ -74,45 +151,47 @@ public class JugadaServlet extends HttpServlet {
     }
 
     try {
-      // 1. Carga de Puntos y Datos Base
+      // 1. Carga de Puntos
       int puntosTotales = jugadaDAO.getPuntosTotalesPorUsuario(usuarioLogueado.getIdUsuario());
       request.setAttribute("puntosTotales", puntosTotales);
 
-      // 2. Obtener todos los partidos y agrupar por FECHA (ignorando la hora)
-      List<Partido> todos = jugadaDAO.getAllPartidos();
+      // 2. Agrupamiento de jornadas por fecha (Lógica de tu compañero con Streams)
+      List<Partido> todosLosPartidos = jugadaDAO.getAllPartidos();
 
-      // Agrupamos en un TreeMap (para mantener el orden cronológico de los días)
-      Map<LocalDate, List<Partido>> jornadasPorFecha = todos.stream()
-          .collect(java.util.stream.Collectors.groupingBy(
+      Map<LocalDate, List<Partido>> jornadasPorFecha = todosLosPartidos.stream()
+          .collect(Collectors.groupingBy(
               p -> p.getFechaHora().toLocalDate(),
-              java.util.TreeMap::new,
-              java.util.stream.Collectors.toList()
+              TreeMap::new,
+              Collectors.toList()
           ));
 
-      // Convertimos las llaves (fechas) en una lista para acceder por índice
-      List<java.time.LocalDate> fechasDisponibles = new ArrayList<>(jornadasPorFecha.keySet());
+      List<LocalDate> fechasDisponibles = new ArrayList<>(jornadasPorFecha.keySet());
 
-      // 3. Determinar qué "Día" (Jornada) mostrar
+      // 3. Determinar Jornada a mostrar
       String jParam = request.getParameter("jornada");
-      int indiceJornada = (jParam != null) ? Integer.parseInt(jParam) : 1;
+      int indiceJornada = (jParam != null && !jParam.isEmpty()) ? Integer.parseInt(jParam) : 1;
 
-      // Validamos que el índice esté dentro del rango de días detectados
       if (!fechasDisponibles.isEmpty()) {
-        // Ajustamos el índice (Jornada 1 = índice 0)
         int index = Math.max(1, Math.min(indiceJornada, fechasDisponibles.size())) - 1;
-        java.time.LocalDate fechaSeleccionada = fechasDisponibles.get(index);
+        LocalDate fechaSeleccionada = fechasDisponibles.get(index);
 
-        // Enviamos los partidos de ese día específico
+        // ESCENARIO 1: Carga de jugadas del usuario para pre-completar los campos
+        // Usamos el index+1 como idEtapa para sincronizar con tu DAO
+        List<Jugada> listaJugadas = jugadaDAO.getByEtapa(usuarioLogueado.getIdUsuario(), index + 1);
+
         request.setAttribute("listaPartidosJornada", jornadasPorFecha.get(fechaSeleccionada));
+        request.setAttribute("listaJugadas", listaJugadas);
         request.setAttribute("jornadaSeleccionada", index + 1);
         request.setAttribute("totalJornadas", fechasDisponibles.size());
         request.setAttribute("fechaActualLabel", fechaSeleccionada);
       }
 
+      request.setAttribute("tiempoLimite", LocalDateTime.now().plusMinutes(15));
+
       request.getRequestDispatcher("jugar.jsp").forward(request, response);
 
     } catch (Exception e) {
-      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al procesar jornadas: " + e.getMessage());
+      response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al procesar: " + e.getMessage());
     }
   }
 }

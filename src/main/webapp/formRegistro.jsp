@@ -18,14 +18,6 @@
 <jsp:useBean id="usuario" class="entities.Usuario" scope="request" />
 <jsp:useBean id="usuarioDao" class="dao.UsuarioImpl" scope="page" />
 
-<c:if test="${param.operacion == 'editar'}">
-    <c:set var="idUsuario" value="${Integer.parseInt(param.id)}" />
-    <c:set var="usuarioEditar" value="${usuarioDao.getById(idUsuario)}" />
-    <c:set var="listaUsuario" value="${usuarioDao.getAll()}" />
-    <c:set var="listaTipoUsuario" value="${TipoUsuario.values()}" />
-    <c:set var="listaCarreras" value="${Carrera.values()}" />
-</c:if>
-
 <%
     TipoUsuario[] tiposU = TipoUsuario.values();
     request.setAttribute("listaTipos", tiposU);
@@ -70,14 +62,8 @@
 
                         <form action="usuarios" method="POST">
 
-                            <input type="hidden" name="txtIdUsuario" id="txtIdUsuario"
-                                value="${not empty usuarioEditar.idUsuario ? usuarioEditar.idUsuario : -1}"
-                            />
-
-                            <input type="hidden" name="operacion" id="operacion"
-                                value="${not empty param.operacion ? param.operacion : 'nuevo' }"
-                            />
-
+                            <input type="hidden" name="txtIdUsuario" id="txtIdUsuario" value="-1"/>
+                            <input type="hidden" name="operacion" id="operacion" value="nuevo"/>
 
                             <div class="mb-3">
                                 <label for="txtEmail" class="form-label">
@@ -87,8 +73,6 @@
                                     pattern="[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}"
                                     title="Por favor, ingresa un correo electrónico válido que incluya un dominio (ejemplo: usuario@correo.com)"
                                     placeholder="usuario@dominio.com"
-                                    value="${not empty usuarioEditar.email ? usuarioEditar.email : ''}"
-                                    ${isReadOnly ? 'readonly' : ''}
                                     required />
                             </div>
                             <div class="mb-3">
@@ -99,8 +83,6 @@
                                     pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}"
                                     title="Debe contener al menos 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un símbolo especial."
                                     placeholder="Contraseña"
-                                    value="${not empty usuarioEditar.password ? usuarioEditar.password : ''}"
-                                    ${isReadOnly ? 'readonly' : ''}
                                     required />
                             </div>
                             <div class="mb-3">
@@ -109,8 +91,6 @@
                                 </label>
                                 <input type="text" name="txtCurso" id="txtCurso" class="form-control"
                                     placeholder="Ej: Primer Año"
-                                    value="${not empty usuarioEditar.curso ? usuarioEditar.curso : ''}"
-                                    ${isReadOnly ? 'readonly' : ''}
                                     required />
                             </div>
                             <div class="mb-3">
@@ -119,7 +99,6 @@
                                         Carrera <span class="text-danger">*</span>
                                     </label>
                                     <select name="lstCarrera" class="form-control" id="lstCarrera"
-                                    ${isReadOnly ? 'disabled' : ''}
                                     required>
                                         <option value="">Seleccione una opción...</option>
                                         <c:forEach var="carrera" items="${listaCarreras}">
@@ -135,7 +114,6 @@
                                         Tipo de Usuario <span class="text-danger">*</span>
                                     </label>
                                     <select name="lstTipo" class="form-control" id="lstTipo"
-                                        ${isReadOnly ? 'disabled' : ''}
                                         required>
                                         <option value="">Seleccione una opción...</option>
                                             <c:forEach var="tipo" items="${listaTipos}">
@@ -151,8 +129,6 @@
                                 </label>
                                 <input type="text" name="txtNombreGrupo" id="txtNombreGrupo" class="form-control"
                                     placeholder="Ej: Letritas"
-                                    value="${not empty usuarioEditar.nombreGrupo ? usuarioEditar.nombreGrupo : ''}"
-                                    ${isReadOnly ? 'readonly' : ''}
                                     />
                             </div>
                             <p class="text-muted small">Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>

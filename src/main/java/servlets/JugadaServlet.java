@@ -168,19 +168,30 @@ public class JugadaServlet extends HttpServlet {
       String jParam = request.getParameter("jornada");
       int indiceJornada = (jParam != null && !jParam.isEmpty()) ? Integer.parseInt(jParam) : 1;
 
+      // de aca -->
       if (!fechasDisponibles.isEmpty()) {
         int index = Math.max(1, Math.min(indiceJornada, fechasDisponibles.size())) - 1;
         LocalDate fechaSeleccionada = fechasDisponibles.get(index);
 
-        //  Carga de jugadas del usuario para pre-completar los campos
-        List<Jugada> listaJugadas = jugadaDAO.getByEtapa(usuarioLogueado.getIdUsuario(), index + 1);
+        // 1. Obtenemos los partidos de esa fecha
+        List<Partido> partidosHoy = jornadasPorFecha.get(fechaSeleccionada);
 
+        // 2. IMPORTANTE: Sacamos el ID de la etapa del primer partido de esa lista
+        // Esto garantiza que el filtro sea el correcto sin importar el índice
+        int idEtapaReal = partidosHoy.get(0).getEtapa().getIdEtapa();
+
+        // 3. Pedimos las jugadas usando el ID real de la base de datos
+        List<Jugada> listaJugadas = jugadaDAO.getByEtapa(usuarioLogueado.getIdUsuario(), idEtapaReal);
+
+        // 4. Mapeamos
         Map<Integer, Jugada> mapaJugadas = listaJugadas.stream()
-            .collect(Collectors.toMap(
-                j -> j.getPartido().getIdPartido(),
-                j -> j,
-                (j1, j2) -> j1
-            ));
+                .collect(Collectors.toMap(
+                        j -> j.getPartido().getIdPartido(),
+                        j -> j,
+                        (j1, j2) -> j1
+                ));
+
+        // hasta aca <--
 
         request.setAttribute("listaPartidosJornada", jornadasPorFecha.get(fechaSeleccionada));
         request.setAttribute("listaJugadas", listaJugadas);

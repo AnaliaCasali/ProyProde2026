@@ -101,6 +101,21 @@ public class Usuario implements Comparable {
   }
 
   // métodos
+  // toString
+  @Override
+  public String toString() {
+    return "Usuario{" +
+        "idUsuario=" + idUsuario +
+        ", email='" + email + '\'' +
+        ", password='" + password + '\'' +
+        ", tipo=" + tipo +
+        ", curso='" + curso + '\'' +
+        ", carrera=" + carrera +
+        ", nombreGrupo='" + nombreGrupo + '\'' +
+        ", puntajeTotal=" + puntajeTotal +
+        '}';
+  }
+
   // equals y hashcode solo para email - idUsuario
   @Override
   public boolean equals(Object o) {

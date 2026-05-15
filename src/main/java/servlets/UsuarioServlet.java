@@ -57,6 +57,27 @@ public class UsuarioServlet extends HttpServlet {
     // nuevo usuario
     UsuarioImpl usuarioDAO = new UsuarioImpl();
     if (operacion.equals("nuevo")) {
+      // regex para que el email contenga un formato valido antes de registrar
+      String regexEmail = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+      if (!email.matches(regexEmail)) {
+        req.setAttribute("error", "Formato de correo inválido. Debe contener '@' y un '.' después del arroba.");
+        req.setAttribute("listaTipos", TipoUsuario.values());
+        req.setAttribute("listaCarreras", Carrera.values());
+        req.getRequestDispatcher("/formRegistro.jsp").forward(req, res);
+        return;
+      }
+
+      // regex para que la contraseña contenga un formato valido
+      String regexPassword = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$";
+      if (!password.matches(regexPassword)) {
+        req.setAttribute("error", "La contraseña debe tener mínimo 8 caracteres, al menos una mayúscula, una minúscula, un número y un símbolo.");
+        req.setAttribute("listaTipos", TipoUsuario.values());
+        req.setAttribute("listaCarreras", Carrera.values());
+        req.getRequestDispatcher("/formRegistro.jsp").forward(req, res);
+        return;
+      }
+
+      // para verificar el email a registrar ya existe
       if (usuarioDAO.existsByEmail(email)) {
         System.out.println("El correo ya se encuentra registrado");
         req.setAttribute("error", "El correo " + email + " ya se encuentra registrado. Por favor, utiliza otro correo.");
@@ -122,6 +143,15 @@ public class UsuarioServlet extends HttpServlet {
 
         RequestDispatcher rdRegistro = req.getRequestDispatcher("/formRegistro.jsp");
         rdRegistro.forward(req, res);
+        break;
+
+      case "rankingGeneral":
+        UsuarioImpl daoRankingGeneral = new UsuarioImpl();
+        List<Usuario> rankingCompleto = daoRankingGeneral.obtenerRankingUsuarios();
+
+        req.setAttribute("rankingCompleto", rankingCompleto);
+        RequestDispatcher rdCompleto = req.getRequestDispatcher("/ranking.jsp");
+        rdCompleto.forward(req, res);
         break;
 
       default: // por defecto

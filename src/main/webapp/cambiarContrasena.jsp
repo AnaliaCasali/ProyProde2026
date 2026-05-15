@@ -20,7 +20,7 @@
     />
 
     <!-- CSS Personalizado -->
-    <link rel="stylesheet" href="../css/estilo.css" />
+    <link rel="stylesheet" href="css/estilo.css" />
   </head>
   <body>
     <!-- NAVBAR SUPERIOR -->

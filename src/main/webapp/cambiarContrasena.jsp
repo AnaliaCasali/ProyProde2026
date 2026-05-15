@@ -85,7 +85,7 @@
       </div>
     </div>
 <main class="mainCambiarContraseña">
-    <form class="formCambiarContraseña" action="ServletUsuario" method="POST">
+    <form class="formCambiarContraseña" action="UsuarioServlet" method="POST">
 
     <input type="hidden" name="operacion" value="actualizarPassword">
 

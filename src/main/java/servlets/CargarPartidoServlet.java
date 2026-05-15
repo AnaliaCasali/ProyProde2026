@@ -117,7 +117,13 @@ public class CargarPartidoServlet extends HttpServlet {
     }
 
     try {
-      return LocalDateTime.parse(valor);
+      LocalDateTime fechaHora = LocalDateTime.parse(valor);
+
+      if (fechaHora.isBefore(LocalDateTime.now())) {
+        throw new IllegalArgumentException("No se puede cargar el partido porque la fecha y hora ingresada es anterior a la actual.");
+      }
+
+      return fechaHora;
     } catch (DateTimeParseException e) {
       throw new IllegalArgumentException("La fecha y hora ingresada no es valida.");
     }

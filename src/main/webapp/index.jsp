@@ -246,7 +246,7 @@
         </div>
 
         <div class="text-center mt-4">
-          <a href="jugar.html" class="btn btn-afa shadow btn-lg"
+          <a href="${pageContext.request.contextPath}/jugar" class="btn btn-afa shadow btn-lg"
             >EMPEZAR A JUGAR</a
           >
         </div>

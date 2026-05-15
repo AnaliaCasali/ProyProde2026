@@ -29,7 +29,7 @@ public class SesionServlet extends HttpServlet {
     if ("true".equals(cerrarSesionParam)) {
       cerrarSesion(req, res);
     } else {
-      res.sendRedirect("index.jsp");
+      res.sendRedirect("inicio");
     }
   }
 
@@ -105,7 +105,7 @@ public class SesionServlet extends HttpServlet {
     sesion.setAttribute("usuario", usuario);
 
     req.setAttribute("mensajeExito", "Sesión iniciada correctamente.");
-    return "index.jsp";
+    return "inicio";
   }
 
   private void redirigirA(String destino, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

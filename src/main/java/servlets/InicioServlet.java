@@ -66,4 +66,8 @@ public class InicioServlet extends HttpServlet {
     // 3. MANDAR LOS DATOS AL JSP
     request.getRequestDispatcher("index.jsp").forward(request, response);
   }
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    doGet(request, response);
+  }
 }

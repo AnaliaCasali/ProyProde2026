@@ -4,11 +4,14 @@
 
 <jsp:include page="header.jsp" />
 
-<main class="container mt-4 mb-5">
-    <div class="text-center mb-5">
+<div class="hero-inicio mb-5 shadow-sm">
+    <div class="container text-center">
         <h1 class="display-6 fw-bold" style="color: var(--afa-azul-oscuro);">Fixture Mundial 2026</h1>
-        <p class="text-muted">Cronograma oficial de partidos y resultados</p>
+        <p class="text-muted mb-0">Cronograma oficial de partidos y resultados</p>
     </div>
+</div>
+
+<main class="container mb-5">
 
     <c:if test="${empty partidos}">
         <div class="alert alert-info text-center shadow-sm rounded-4" role="alert">
@@ -19,9 +22,7 @@
     <div class="row g-4">
         <c:forEach var="p" items="${partidos}">
             <div class="col-12 col-md-6 col-lg-4">
-                <%-- Cápsula inspirada en tu estilo.css --%>
                 <div class="capsula-prode p-3 h-100 shadow-sm border-0 bg-white d-flex flex-column justify-content-between">
-
 
                     <div class="text-center mb-3">
                         <span class="badge rounded-pill px-3" style="background-color: var(--afa-azul-oscuro); font-size: 0.7rem; letter-spacing: 1px;">
@@ -29,9 +30,7 @@
                         </span>
                     </div>
 
-
                     <div class="d-flex align-items-center justify-content-between">
-
 
                         <div class="equipo d-flex flex-column align-items-center text-center" style="width: 38%;">
                             <div class="mb-2 shadow-sm border rounded" style="width: 55px; height: 38px; overflow: hidden; background-color: #f8f9fa;">
@@ -41,7 +40,6 @@
                                 ${p.equipoLocal.nombre}
                             </span>
                         </div>
-
 
                         <div class="versus flex-grow-1 text-center px-1">
                             <c:choose>
@@ -60,7 +58,6 @@
                             </c:choose>
                         </div>
 
-
                         <div class="equipo d-flex flex-column align-items-center text-center" style="width: 38%;">
                             <div class="mb-2 shadow-sm border rounded" style="width: 55px; height: 38px; overflow: hidden; background-color: #f8f9fa;">
                                 <img src="${p.equipoVisitante.icono}" alt="${p.equipoVisitante.nombre}" style="width: 100%; height: 100%; object-fit: cover;">
@@ -70,7 +67,6 @@
                             </span>
                         </div>
                     </div>
-
 
                     <div class="mt-3 pt-2 border-top text-center" style="font-size: 0.68rem; color: #7f8c8d;">
                         <div class="d-flex flex-wrap justify-content-center gap-2">

@@ -72,10 +72,6 @@ CREATE TABLE IF NOT EXISTS `prode`.`Jugadas` (
   UNIQUE KEY `usuario_partido_unique` (`idUsuario`, `idPartido`)) -- Evita que un usuario juegue dos veces el mismo partido
 ENGINE = InnoDB;
 
--- Insert usuario administrador
-INSERT INTO prode.Usuarios (idUsuario, password, email, tipo, curso, carrera, nombreGrupo)
-VALUES ('1', '$2a$12$wWnqWd.GVGeqyhfwpog3z.nikcB8gOf/5dM1Ads.OrkyzSJcZCyhS', 'tsds@administrador.edu', 'ADMINISTRADOR', 'Tercer Año', 'TECNICATURA_SUPERIOR_EN_DESARROLLO_DE_SOFTWARE', 'Administrador');
--- email: tsds@administrador.edu | contraseña: 123456
 
 -- TRIGGERS
 -- Asegurar que en el milisegundo en que pasas un partido a finalizado = 1, o al actualizar goles

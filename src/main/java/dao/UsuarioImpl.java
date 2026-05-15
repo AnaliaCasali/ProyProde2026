@@ -150,6 +150,40 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
     }
   }
 
+    private static final String SQL_UPDATEPASSWORD="UPDATE usuarios SET " +
+            "password = ? " +
+            "WHERE idUsuario = ?";
+
+    public void updatePassword(Integer idUsuario, String nuevaPassword) {
+
+        conn = obtenerConexion();
+
+        PreparedStatement pst = null;
+
+        try {
+
+            pst = conn.prepareStatement(SQL_UPDATEPASSWORD);
+
+            pst.setString(1, nuevaPassword);
+            pst.setInt(2, idUsuario);
+
+            int resultado = pst.executeUpdate();
+
+            if(resultado == 1) {
+                System.out.println("Contraseña actualizada");
+            } else {
+                System.out.println("No se pudo actualizar la contraseña");
+            }
+
+            pst.close();
+            conn.close();
+
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar contraseña");
+            throw new RuntimeException(e);
+        }
+    }
+
   @Override
   public void delete(Integer id) {
     conn = obtenerConexion();

@@ -29,6 +29,10 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
           "email = ?, password = ?, tipo = ?, curso = ?, carrera = ?, nombreGrupo = ? " +
           "WHERE idUsuario = ?";
 
+  // update passord
+  private static final String SQL_UPDATEPASSWORD =
+      "UPDATE usuarios SET password = ? WHERE idUsuario = ?";
+
   private static final String SQL_DELETE =
       "DELETE FROM usuarios WHERE idUsuario = ?";
 
@@ -113,6 +117,7 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
     }
   }
 
+  // update general
   @Override
   public void update(Usuario objeto) {
     Usuario usuario = objeto;
@@ -150,39 +155,33 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
     }
   }
 
-    private static final String SQL_UPDATEPASSWORD="UPDATE usuarios SET " +
-            "password = ? " +
-            "WHERE idUsuario = ?";
+  // update password
+  public void updatePassword(Integer idUsuario, String nuevaPassword) {
+    conn = obtenerConexion();
+    PreparedStatement pst = null;
 
-    public void updatePassword(Integer idUsuario, String nuevaPassword) {
+    try {
+      pst = conn.prepareStatement(SQL_UPDATEPASSWORD);
 
-        conn = obtenerConexion();
+      pst.setString(1, nuevaPassword);
 
-        PreparedStatement pst = null;
+      pst.setInt(2, idUsuario);
 
-        try {
+      int resultado = pst.executeUpdate();
+      if (resultado == 1) {
+        System.out.println("Contraseña actualizada");
+      } else {
+        System.out.println("No se pudo actualizar la contraseña");
+      }
 
-            pst = conn.prepareStatement(SQL_UPDATEPASSWORD);
+      pst.close();
+      conn.close();
 
-            pst.setString(1, nuevaPassword);
-            pst.setInt(2, idUsuario);
-
-            int resultado = pst.executeUpdate();
-
-            if(resultado == 1) {
-                System.out.println("Contraseña actualizada");
-            } else {
-                System.out.println("No se pudo actualizar la contraseña");
-            }
-
-            pst.close();
-            conn.close();
-
-        } catch (SQLException e) {
-            System.out.println("Error al actualizar contraseña");
-            throw new RuntimeException(e);
-        }
+    } catch (SQLException e) {
+      System.out.println("Error al actualizar contraseña");
+      throw new RuntimeException(e);
     }
+  }
 
   @Override
   public void delete(Integer id) {
@@ -336,10 +335,10 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
     ResultSet rs = null;
     List<Usuario> listaRanking = new ArrayList<>();
 
-    String sqlRanking = "SELECT u.idUsuario, u.email, u.carrera, SUM(j.puntaje) AS puntajeTotal " +
+    String sqlRanking = "SELECT u.idUsuario, u.email, u.carrera, u.curso, u.nombreGrupo, SUM(j.puntaje) AS puntajeTotal " +
         "FROM usuarios u " +
         "INNER JOIN jugadas j ON u.idUsuario = j.idUsuario " +
-        "GROUP BY u.idUsuario, u.email, u.carrera " +
+        "GROUP BY u.idUsuario, u.email, u.carrera, u.curso, u.nombreGrupo " +
         "ORDER BY puntajeTotal DESC";
 
     try {
@@ -350,7 +349,9 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
         Usuario u = new Usuario();
         u.setIdUsuario(rs.getInt("idUsuario"));
         u.setEmail(rs.getString("email"));
+        u.setCurso(rs.getString("curso"));
         String carreraBD = rs.getString("carrera");
+        u.setNombreGrupo(rs.getString("nombreGrupo"));
         if (carreraBD != null && !carreraBD.isEmpty()) {
           u.setCarrera(Carrera.valueOf(carreraBD));
         }

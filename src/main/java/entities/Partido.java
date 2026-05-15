@@ -1,6 +1,7 @@
 package entities;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Partido {
@@ -78,5 +79,13 @@ public class Partido {
     @Override
     public int hashCode() {
         return Objects.hash(idPartido, equipoLocal, equipoVisitante, etapa, estadio, fechaHora, golesLocal, golesVisitante, finalizado);
+    }
+
+    public String getFechaHoraFormateada() {
+        if (this.fechaHora == null) {
+            return "Fecha a confirmar";
+        }
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy - HH:mm 'hs'");
+        return this.fechaHora.format(formato);
     }
 }

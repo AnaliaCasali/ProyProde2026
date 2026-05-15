@@ -245,7 +245,8 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
   public List<Partido> getPartidosByJornada(int nroJornada) {
     List<Partido> lista = new ArrayList<>();
-    String sql = "SELECT p.idPartido, p.idEtapa, p.fechaHora, " +
+    // MODIFICADO: Agregamos p.golesLocal, p.golesVisitante, p.finalizado a la consulta SQL
+    String sql = "SELECT p.idPartido, p.idEtapa, p.fechaHora, p.golesLocal, p.golesVisitante, p.finalizado, " +
         "el.idEquipo AS idLocal, el.nombre AS nombreLocal, el.icono AS iconoLocal, " +
         "ev.idEquipo AS idVisitante, ev.nombre AS nombreVisitante, ev.icono AS iconoVisitante, " +
         "est.estadio, est.pais " +
@@ -270,6 +271,12 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
           Etapa e = new Etapa();
           e.setIdEtapa(rs.getInt("idEtapa"));
           p.setEtapa(e);
+
+          // === MAPEO NUEVO: Leemos los marcadores reales de la DB ===
+          p.setGolesLocal(rs.getInt("golesLocal"));
+          p.setGolesVisitante(rs.getInt("golesVisitante"));
+          p.setFinalizado(rs.getBoolean("finalizado"));
+          // =========================================================
 
           Equipo loc = new Equipo();
           loc.setIdEquipo(rs.getInt("idLocal"));
@@ -299,7 +306,8 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
 
   public List<Partido> getAllPartidos() {
     List<Partido> lista = new ArrayList<>();
-    String sql = "SELECT p.idPartido, p.idEtapa, p.fechaHora, " +
+    // MODIFICADO: Agregamos p.golesLocal, p.golesVisitante, p.finalizado a la selección de columnas
+    String sql = "SELECT p.idPartido, p.idEtapa, p.fechaHora, p.golesLocal, p.golesVisitante, p.finalizado, " +
         "el.idEquipo AS idLocal, el.nombre AS nombreLocal, el.icono AS iconoLocal, " +
         "ev.idEquipo AS idVisitante, ev.nombre AS nombreVisitante, ev.icono AS iconoVisitante, " +
         "est.estadio, est.pais " +
@@ -325,6 +333,12 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
         if (rs.getTimestamp("fechaHora") != null) {
           p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
         }
+
+        // === MAPEO NUEVO: Guardamos los resultados de los partidos finalizados ===
+        p.setGolesLocal(rs.getInt("golesLocal"));
+        p.setGolesVisitante(rs.getInt("golesVisitante"));
+        p.setFinalizado(rs.getBoolean("finalizado"));
+        // ===========================================================================
 
         // Mapeo Equipo Local
         Equipo loc = new Equipo();

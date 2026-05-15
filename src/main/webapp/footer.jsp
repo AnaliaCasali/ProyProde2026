@@ -39,7 +39,7 @@
 
 <script>
     (function() {
-        // Buscamos si el div del reloj existe en la pantalla actual
+        // 1.Buscamos si el div del reloj existe en la pantalla actual
         const relojElemento = document.getElementById("countdown-reloj");
 
         // Si no existe (porque estamos en el fixture, cuenta, etc.), frenamos el script acá

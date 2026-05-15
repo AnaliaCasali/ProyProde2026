@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="header.jsp" %>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- 1.CONTENIDO PRINCIPAL -->
     <main>
       <div class="countdown-section text-center my-5">
 

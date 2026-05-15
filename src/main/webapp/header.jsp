@@ -19,7 +19,7 @@
     <c:if test="${sessionScope.usuario != null}">
       <span class="text-white small d-md-none">👤 ${sessionScope.usuario.email}</span>
     </c:if>
-    <%-- Este botón solo se ve en PC gracias a d-none d-md-block --%>
+    <%--1. Este botón solo se ve en PC gracias a d-none d-md-block --%>
     <button class="navbar-toggler border-0 d-none d-md-block" type="button" data-bs-toggle="offcanvas" data-bs-target="#menu">
       <span class="navbar-toggler-icon"></span>
     </button>

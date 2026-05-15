@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -40,14 +41,17 @@ public class JugadaServlet extends HttpServlet {
 
     int pronosticosGuardados = 0;
     List<String> errores = new ArrayList<>();
+    int jornadaActual = 1;
 
     try {
       // Capturamos la jornada actual del input oculto
       String jornadaActualStr = request.getParameter("jornadaActual");
-      int jornadaActual = (jornadaActualStr != null && !jornadaActualStr.isEmpty()) ? Integer.parseInt(jornadaActualStr) : 1;
+      if (jornadaActualStr != null && !jornadaActualStr.isEmpty()) {
+        jornadaActual = Integer.parseInt(jornadaActualStr);
+      }
 
-      // Traemos los partidos de esta fecha de una sola vez para no sobrecargar la base de datos
-      List<Partido> partidosDeLaJornada = jugadaDAO.getPartidosByJornada(jornadaActual);
+      // Traemos todos los partidos para validar sin importar qué jornada viaje en el input
+      List<Partido> partidosDeLaJornada = jugadaDAO.getAllPartidos();
 
       // STREAMS: Obtenemos todos los parámetros del request, filtramos los goles locales y extraemos el ID
       List<Integer> idsPartidosFormulario = java.util.Collections.list(request.getParameterNames()).stream()
@@ -57,7 +61,7 @@ public class JugadaServlet extends HttpServlet {
 
       LocalDateTime ahora = LocalDateTime.now();
 
-      //  Procesamos cada partido que vino en el formulario
+      // Procesamos cada partido que vino en el formulario
       for (Integer idPartido : idsPartidosFormulario) {
         try {
           String strGolesL = request.getParameter("golesL_" + idPartido);
@@ -75,7 +79,7 @@ public class JugadaServlet extends HttpServlet {
             throw new FormatoGolesInvalidoException("Los goles no pueden ser negativos.");
           }
 
-          // STREAMS: Buscamos el partido específico en la lista que ya tenemos en memoria
+          // STREAMS: Buscamos el partido específico en la lista global en memoria
           Partido partidoInfo = partidosDeLaJornada.stream()
               .filter(p -> p.getIdPartido() == idPartido)
               .findFirst()
@@ -83,7 +87,7 @@ public class JugadaServlet extends HttpServlet {
 
           if (partidoInfo == null) continue;
 
-          // En vez de lanzar la excepción y frenar todo, ignoramos los partidos bloqueados.
+          // Validación de tiempo límite (15 minutos antes)
           if (ahora.isAfter(partidoInfo.getFechaHora().minusMinutes(15))) {
             continue;
           }
@@ -120,23 +124,24 @@ public class JugadaServlet extends HttpServlet {
         }
       }
 
-      // Preparamos los mensajes de feedback dinámicos para la vista
+      // Preparamos los mensajes de feedback guardándolos en sesión (para no perderlos en el redirect)
+      HttpSession session = request.getSession();
       if (pronosticosGuardados > 0) {
-        request.setAttribute("mensaje", "¡Se guardaron " + pronosticosGuardados + " pronósticos correctamente!");
+        session.setAttribute("mensajeSession", "¡Se guardaron " + pronosticosGuardados + " pronósticos correctamente!");
       } else if (errores.isEmpty()) {
-        request.setAttribute("mensaje", "No hubo cambios nuevos para guardar.");
+        session.setAttribute("mensajeSession", "No hubo cambios nuevos para guardar.");
       }
 
       if (!errores.isEmpty()) {
-        request.setAttribute("error", "Inconvenientes detectados: " + String.join(", ", errores));
+        session.setAttribute("errorSession", "Inconvenientes detectados: " + String.join(", ", errores));
       }
 
     } catch (Exception e) {
-      request.setAttribute("error", "Error general en el guardado: " + e.getMessage());
+      request.getSession().setAttribute("errorSession", "Error general en el guardado: " + e.getMessage());
     }
 
-    // Volvemos a procesar la pantalla
-    processRequest(request, response);
+    // FIX VITAL: Redirección limpia pasando la jornada para evitar cruce de datos con la jornada 1
+    response.sendRedirect("jugar?jornada=" + jornadaActual);
   }
 
   private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -148,6 +153,17 @@ public class JugadaServlet extends HttpServlet {
     }
 
     try {
+      // Bajamos los mensajes temporales de la sesión al request (para los Toasts) y los limpiamos
+      HttpSession session = request.getSession();
+      if (session.getAttribute("mensajeSession") != null) {
+        request.setAttribute("mensaje", session.getAttribute("mensajeSession"));
+        session.removeAttribute("mensajeSession");
+      }
+      if (session.getAttribute("errorSession") != null) {
+        request.setAttribute("error", session.getAttribute("errorSession"));
+        session.removeAttribute("errorSession");
+      }
+
       // 1. Carga de Puntos
       int puntosTotales = jugadaDAO.getPuntosTotalesPorUsuario(usuarioLogueado.getIdUsuario());
       request.setAttribute("puntosTotales", puntosTotales);
@@ -172,9 +188,16 @@ public class JugadaServlet extends HttpServlet {
         int index = Math.max(1, Math.min(indiceJornada, fechasDisponibles.size())) - 1;
         LocalDate fechaSeleccionada = fechasDisponibles.get(index);
 
-        //  Carga de jugadas del usuario para pre-completar los campos
-        List<Jugada> listaJugadas = jugadaDAO.getByEtapa(usuarioLogueado.getIdUsuario(), index + 1);
+        // Obtenemos los partidos de esa fecha
+        List<Partido> partidosHoy = jornadasPorFecha.get(fechaSeleccionada);
 
+        // Sacamos el ID de la etapa real del primer partido de esa lista
+        int idEtapaReal = partidosHoy.get(0).getEtapa().getIdEtapa();
+
+        // Pedimos las jugadas usando el ID real de la etapa de la DB
+        List<Jugada> listaJugadas = jugadaDAO.getByEtapa(usuarioLogueado.getIdUsuario(), idEtapaReal);
+
+        // Mapeamos a un Map para que el JSP consulte directamente por ID de partido
         Map<Integer, Jugada> mapaJugadas = listaJugadas.stream()
             .collect(Collectors.toMap(
                 j -> j.getPartido().getIdPartido(),
@@ -182,7 +205,9 @@ public class JugadaServlet extends HttpServlet {
                 (j1, j2) -> j1
             ));
 
-        request.setAttribute("listaPartidosJornada", jornadasPorFecha.get(fechaSeleccionada));
+        // Enviamos todo empaquetado al JSP
+        request.setAttribute("listaPartidosJornada", partidosHoy);
+        request.setAttribute("mapaJugadas", mapaJugadas); // <--- FIX VITAL: Enviado con éxito al request
         request.setAttribute("listaJugadas", listaJugadas);
         request.setAttribute("jornadaSeleccionada", index + 1);
         request.setAttribute("totalJornadas", fechasDisponibles.size());

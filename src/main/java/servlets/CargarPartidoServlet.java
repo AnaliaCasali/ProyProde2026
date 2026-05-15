@@ -1,11 +1,10 @@
 package servlets;
 
 import dao.CatalogoDAO;
-import dao.PartidoDAO;
-import entities.Equipo;
 import entities.Estadio;
 import entities.Etapa;
 import entities.Partido;
+import interfaces.AdmConexion;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,15 +12,31 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @WebServlet("/cargar-partido")
-public class CargarPartidoServlet extends HttpServlet {
+public class CargarPartidoServlet extends HttpServlet implements AdmConexion {
+
+  private static final String SQL_PARTIDOS_PENDIENTES =
+      "SELECT p.idPartido, p.idEtapa, p.idEstadio, p.fechaHora, " +
+          "et.nombreEtapa, es.estadio AS estadio_nombre, es.ciudad, es.pais " +
+          "FROM partidos p " +
+          "JOIN etapas et ON p.idEtapa = et.idEtapa " +
+          "JOIN estadios es ON p.idEstadio = es.idEstadio " +
+          "WHERE (p.equipoLocal IS NULL OR p.equipoVisitante IS NULL) " +
+          "AND p.idEtapa BETWEEN 4 AND 9 " +
+          "ORDER BY p.fechaHora ASC";
+
+  private static final String SQL_COMPLETAR_EQUIPOS =
+      "UPDATE partidos SET equipoLocal = ?, equipoVisitante = ? WHERE idPartido = ?";
 
   private final CatalogoDAO catalogoDAO = new CatalogoDAO();
-  private final PartidoDAO partidoDAO = new PartidoDAO();
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -33,8 +48,15 @@ public class CargarPartidoServlet extends HttpServlet {
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
-      Partido partido = crearPartidoDesdeRequest(request);
-      partidoDAO.insert(partido);
+      int idPartido = leerEntero(request, "idPartido", "Debe seleccionar el partido a completar.");
+      int idEquipoLocal = leerEntero(request, "equipoLocal", "Debe seleccionar el equipo local.");
+      int idEquipoVisitante = leerEntero(request, "equipoVisitante", "Debe seleccionar el equipo visitante.");
+
+      if (idEquipoLocal == idEquipoVisitante) {
+        throw new IllegalArgumentException("El equipo local y el visitante no pueden ser el mismo.");
+      }
+
+      completarEquipos(idPartido, idEquipoLocal, idEquipoVisitante);
       request.setAttribute("mensajeExito", "El partido se cargo correctamente.");
     } catch (IllegalArgumentException e) {
       request.setAttribute("mensajeError", e.getMessage());
@@ -48,53 +70,61 @@ public class CargarPartidoServlet extends HttpServlet {
   private void cargarFormulario(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     try {
+      request.setAttribute("partidosPendientes", obtenerPartidosPendientes());
       request.setAttribute("equipos", catalogoDAO.obtenerEquipos());
-      request.setAttribute("etapas", catalogoDAO.obtenerEtapasEliminatorias());
-      request.setAttribute("estadios", catalogoDAO.obtenerEstadios());
     } catch (RuntimeException e) {
+      request.setAttribute("partidosPendientes", Collections.emptyList());
       request.setAttribute("equipos", Collections.emptyList());
-      request.setAttribute("etapas", Collections.emptyList());
-      request.setAttribute("estadios", Collections.emptyList());
       request.setAttribute("mensajeError", e.getMessage());
     }
 
     request.getRequestDispatcher("cargarPartido.jsp").forward(request, response);
   }
 
-  private Partido crearPartidoDesdeRequest(HttpServletRequest request) {
-    int idEquipoLocal = leerEntero(request, "equipoLocal", "Debe seleccionar el equipo local.");
-    int idEquipoVisitante = leerEntero(request, "equipoVisitante", "Debe seleccionar el equipo visitante.");
-    int idEtapa = leerEntero(request, "idEtapa", "Debe seleccionar una etapa.");
-    int idEstadio = leerEntero(request, "idEstadio", "Debe seleccionar un estadio.");
-    LocalDateTime fechaHora = leerFechaHora(request.getParameter("fechaHora"));
+  private List<Partido> obtenerPartidosPendientes() {
+    List<Partido> partidos = new ArrayList<>();
 
-    if (idEquipoLocal == idEquipoVisitante) {
-      throw new IllegalArgumentException("El equipo local y el visitante no pueden ser el mismo.");
+    try (Connection conn = obtenerConexion();
+         PreparedStatement pst = conn.prepareStatement(SQL_PARTIDOS_PENDIENTES);
+         ResultSet rs = pst.executeQuery()) {
+
+      while (rs.next()) {
+        Etapa etapa = new Etapa();
+        etapa.setIdEtapa(rs.getInt("idEtapa"));
+        etapa.setNombreEtapa(rs.getString("nombreEtapa"));
+
+        Estadio estadio = new Estadio();
+        estadio.setIdEstadio(rs.getInt("idEstadio"));
+        estadio.setEstadio(rs.getString("estadio_nombre"));
+        estadio.setCiudad(rs.getString("ciudad"));
+        estadio.setPais(rs.getString("pais"));
+
+        Partido partido = new Partido();
+        partido.setIdPartido(rs.getInt("idPartido"));
+        partido.setEtapa(etapa);
+        partido.setEstadio(estadio);
+        partido.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+
+        partidos.add(partido);
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException("Error al obtener los partidos pendientes.", e);
     }
 
-    Equipo local = new Equipo();
-    local.setIdEquipo(idEquipoLocal);
+    return partidos;
+  }
 
-    Equipo visitante = new Equipo();
-    visitante.setIdEquipo(idEquipoVisitante);
+  private void completarEquipos(int idPartido, int idEquipoLocal, int idEquipoVisitante) {
+    try (Connection conn = obtenerConexion();
+         PreparedStatement pst = conn.prepareStatement(SQL_COMPLETAR_EQUIPOS)) {
 
-    Etapa etapa = new Etapa();
-    etapa.setIdEtapa(idEtapa);
-
-    Estadio estadio = new Estadio();
-    estadio.setIdEstadio(idEstadio);
-
-    Partido partido = new Partido();
-    partido.setEquipoLocal(local);
-    partido.setEquipoVisitante(visitante);
-    partido.setEtapa(etapa);
-    partido.setEstadio(estadio);
-    partido.setFechaHora(fechaHora);
-    partido.setGolesLocal(0);
-    partido.setGolesVisitante(0);
-    partido.setFinalizado(false);
-
-    return partido;
+      pst.setInt(1, idEquipoLocal);
+      pst.setInt(2, idEquipoVisitante);
+      pst.setInt(3, idPartido);
+      pst.executeUpdate();
+    } catch (SQLException e) {
+      throw new RuntimeException("Error al completar los equipos del partido.", e);
+    }
   }
 
   private int leerEntero(HttpServletRequest request, String parametro, String mensajeError) {
@@ -108,24 +138,6 @@ public class CargarPartidoServlet extends HttpServlet {
       return Integer.parseInt(valor);
     } catch (NumberFormatException e) {
       throw new IllegalArgumentException(mensajeError);
-    }
-  }
-
-  private LocalDateTime leerFechaHora(String valor) {
-    if (valor == null || valor.trim().isEmpty()) {
-      throw new IllegalArgumentException("Debe ingresar la fecha y hora del partido.");
-    }
-
-    try {
-      LocalDateTime fechaHora = LocalDateTime.parse(valor);
-
-      if (fechaHora.isBefore(LocalDateTime.now())) {
-        throw new IllegalArgumentException("No se puede cargar el partido porque la fecha y hora ingresada es anterior a la actual.");
-      }
-
-      return fechaHora;
-    } catch (DateTimeParseException e) {
-      throw new IllegalArgumentException("La fecha y hora ingresada no es valida.");
     }
   }
 }

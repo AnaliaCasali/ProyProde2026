@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.time.LocalDateTime" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="entities.Equipo" %>
 <%@ page import="entities.Estadio" %>
 <%@ page import="entities.Etapa" %>
@@ -9,6 +11,7 @@
   List<Equipo> equipos = (List<Equipo>) request.getAttribute("equipos");
   List<Etapa> etapas = (List<Etapa>) request.getAttribute("etapas");
   List<Estadio> estadios = (List<Estadio>) request.getAttribute("estadios");
+  String fechaHoraMinima = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
 %>
 
 <main class="container py-4 pb-5">
@@ -49,7 +52,7 @@
 
         <div class="col-12 col-md-6">
           <label for="fechaHora" class="form-label">Fecha y hora</label>
-          <input id="fechaHora" name="fechaHora" type="datetime-local" class="form-control" required>
+          <input id="fechaHora" name="fechaHora" type="datetime-local" class="form-control" min="<%= fechaHoraMinima %>" required>
         </div>
 
         <div class="col-12 col-md-6">

@@ -336,10 +336,10 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
     ResultSet rs = null;
     List<Usuario> listaRanking = new ArrayList<>();
 
-    String sqlRanking = "SELECT u.idUsuario, u.email, u.carrera, SUM(j.puntaje) AS puntajeTotal " +
+    String sqlRanking = "SELECT u.idUsuario, u.email, u.carrera, u.curso, u.nombreGrupo, SUM(j.puntaje) AS puntajeTotal " +
         "FROM usuarios u " +
         "INNER JOIN jugadas j ON u.idUsuario = j.idUsuario " +
-        "GROUP BY u.idUsuario, u.email, u.carrera " +
+        "GROUP BY u.idUsuario, u.email, u.carrera, u.curso, u.nombreGrupo " +
         "ORDER BY puntajeTotal DESC";
 
     try {
@@ -350,7 +350,9 @@ public class UsuarioImpl implements DAO<Usuario, Integer>, AdmConexion {
         Usuario u = new Usuario();
         u.setIdUsuario(rs.getInt("idUsuario"));
         u.setEmail(rs.getString("email"));
+        u.setCurso(rs.getString("curso"));
         String carreraBD = rs.getString("carrera");
+        u.setNombreGrupo(rs.getString("nombreGrupo"));
         if (carreraBD != null && !carreraBD.isEmpty()) {
           u.setCarrera(Carrera.valueOf(carreraBD));
         }

@@ -24,9 +24,9 @@ public class SesionServlet extends HttpServlet {
   private static Map<String, Usuario> usuariosActivos = new HashMap<>();
 
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    String parametroLogout = req.getParameter("cerrarSesion");
+    String cerrarSesionParam = req.getParameter("cerrarSesion");
 
-    if ("true".equals(parametroLogout)) {
+    if ("true".equals(cerrarSesionParam)) {
       cerrarSesion(req, res);
     } else {
       res.sendRedirect("index.jsp");
@@ -36,18 +36,6 @@ public class SesionServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     iniciarSesion(req, res);
-  }
-
-  // metodos
-  // para iniciar sesion
-  private void iniciarSesion(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    // obtengo los parametros de la peticion
-    String email = req.getParameter("email");
-    String password = req.getParameter("password");
-
-    // llamo a dos funciones: validar credenciales y redirigir A
-    String destino = validarCredenciales(email, password, req);
-    redirigirA(destino, req, res);
   }
 
   // para cerrar sesion
@@ -64,6 +52,18 @@ public class SesionServlet extends HttpServlet {
 
     req.setAttribute("mensajeExito", "Se ha cerrado la sesión correctamente.");
     redirigirA("formLogin.jsp", req, res);
+  }
+
+  // metodos
+  // para iniciar sesion
+  private void iniciarSesion(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    // obtengo los parametros de la peticion
+    String email = req.getParameter("email");
+    String password = req.getParameter("password");
+
+    // llamo a dos funciones: validar credenciales y redirigir A
+    String destino = validarCredenciales(email, password, req);
+    redirigirA(destino, req, res);
   }
 
   // para validar email y password
@@ -109,8 +109,12 @@ public class SesionServlet extends HttpServlet {
   }
 
   private void redirigirA(String destino, HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    RequestDispatcher rd = req.getRequestDispatcher(destino);
-    rd.forward(req, res);
+    if (destino.equals("index.jsp")) {
+      res.sendRedirect(destino);
+    } else {
+      RequestDispatcher rd = req.getRequestDispatcher(destino);
+      rd.forward(req, res);
+    }
   }
 }
 

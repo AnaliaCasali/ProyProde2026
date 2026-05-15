@@ -4,11 +4,11 @@
 
 <!-- NAVEGACIÓN INFERIOR (MOBILE) -->
     <div class="mobile-nav">
-      <a href="index.jsp" class="active">
+      <a href="${pageContext.request.contextPath}/index.jsp" class="active">
         <i class="bi bi-house-door-fill"></i>
         <span>Inicio</span>
       </a>
-      <a href="jugar.jsp">
+      <a href="${pageContext.request.contextPath}/jugar.jsp">
         <i class="bi bi-controller"></i>
         <span>Jugar</span>
       </a>
@@ -20,7 +20,7 @@
         <i class="bi bi-trophy"></i>
         <span>Ranking</span>
       </a>
-      <a href="como-jugar">
+      <a href="${pageContext.request.contextPath}/comoJugar.jsp">
         <i class="bi bi-file-text"></i>
         <span>Reglas</span>
       </a>

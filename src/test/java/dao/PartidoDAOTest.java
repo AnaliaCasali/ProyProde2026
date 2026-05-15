@@ -39,7 +39,8 @@ class PartidoDAOTest {
   @Test
   void testGetAll() throws SQLException {
     // Arrange: Preparar mocks para simular BD
-    when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
+    when(mockConnection.prepareStatement(anyString()))
+        .thenReturn(mockPreparedStatement);
     when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
 
     // Simular datos en ResultSet

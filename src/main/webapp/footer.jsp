@@ -1,3 +1,7 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page isELIgnored="false" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <!-- NAVEGACIÓN INFERIOR (MOBILE) -->
     <div class="mobile-nav">
       <a href="${pageContext.request.contextPath}/index.jsp" class="active">
@@ -8,11 +12,11 @@
         <i class="bi bi-controller"></i>
         <span>Jugar</span>
       </a>
-      <a href="${pageContext.request.contextPath}/fixture.jsp">
+      <a href="PartidoServlet?accion=fixture">
         <i class="bi bi-calendar3"></i>
         <span>Fixture</span>
       </a>
-      <a href="${pageContext.request.contextPath}/ranking.jsp">
+      <a href="usuarios?accion=rankingGeneral">
         <i class="bi bi-trophy"></i>
         <span>Ranking</span>
       </a>
@@ -20,6 +24,12 @@
         <i class="bi bi-file-text"></i>
         <span>Reglas</span>
       </a>
+      <c:if test="${not empty sessionScope.usuario}">
+      <a href="informacionDeLaCuenta.jsp">
+        <i class="bi bi-file-text"></i>
+        <span>Mi Cuenta</span>
+      </a>
+      </c:if>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

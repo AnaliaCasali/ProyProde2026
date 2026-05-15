@@ -41,6 +41,7 @@ import static org.hamcrest.Matchers.lessThan;
 @Testcontainers
 class CargarPartidoServletIntegrationTest {
 
+
   @Container
   static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.0")
       .withDatabaseName("prode")
@@ -79,7 +80,7 @@ class CargarPartidoServletIntegrationTest {
 
     given()
         .log().all()
-        .when()
+      .when()
         .get("/cargar-partido")
         .then()
         .log().all()

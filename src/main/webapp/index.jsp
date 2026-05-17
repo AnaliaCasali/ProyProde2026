@@ -36,7 +36,7 @@
         <div class="mb-5">
           <h6 class="fw-bold mb-3 d-flex justify-content-between align-items-center">
             <span><i class="bi bi-trophy-fill text-warning me-2"></i> TOP 3 GENERAL</span>
-            <a href="ranking.html" class="text-decoration-none small" style="color: var(--afa-celeste)">Ver todo</a>
+            <a href="${pageContext.request.contextPath}/usuarios?accion=rankingGeneral" class="text-decoration-none small" style="color: var(--afa-celeste)">Ver todo</a>
           </h6>
 
           <!-- Puesto 1 -->

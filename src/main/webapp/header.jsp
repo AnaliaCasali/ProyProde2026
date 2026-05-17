@@ -54,11 +54,14 @@
       <a href="${pageContext.request.contextPath}/PartidoServlet?accion=fixture" class="list-group-item list-group-item-action">Fixture</a>
       <a href="${pageContext.request.contextPath}/usuarios?accion=rankingGeneral" class="list-group-item list-group-item-action">Ranking</a>
 
+
       <%-- SECCI脫N DE GESTI脫N ADMINISTRADOR --%>
       <c:if test="${sessionScope.usuario != null && sessionScope.usuario.tipo == 'ADMINISTRADOR'}">
         <div class="list-group-item bg-light text-secondary small fw-bold text-uppercase border-top">Gesti贸n</div>
         <a href="${pageContext.request.contextPath}/cargarPartido.jsp" class="list-group-item list-group-item-action">Nuevo Partido</a>
         <a href="${pageContext.request.contextPath}/formRegistro.jsp" class="list-group-item list-group-item-action">Registrar Usuario</a>
+        <a href="${pageContext.request.contextPath}/cargar-resultado" class="list-group-item list-group-item-action">Cargar Resultado</a>
+
       </c:if>
 
       <%-- SECCI脫N MI CUENTA --%>

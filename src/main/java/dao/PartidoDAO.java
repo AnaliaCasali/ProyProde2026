@@ -46,6 +46,20 @@ public class PartidoDAO implements AdmConexion, DAO<Partido, Integer> {
           "JOIN estadios es ON p.idEstadio = es.idEstadio " +
           "ORDER BY p.fechaHora ASC";
 
+  // Obtener partidos disponibles para cargar resultado: no finalizados y fechaHora <= NOW()
+  public static final String SQL_GET_AVAILABLE_FOR_RESULT =
+      "SELECT p.*, " +
+          "el.nombre AS local_nombre, el.icono AS local_icono, el.grupo AS local_grupo, " +
+          "ev.nombre AS visitante_nombre, ev.icono AS visitante_icono, ev.grupo AS visitante_grupo, " +
+          "et.nombreEtapa, es.estadio AS estadio_nombre, es.ciudad, es.pais " +
+          "FROM partidos p " +
+          "JOIN equipos el ON p.equipoLocal = el.idEquipo " +
+          "JOIN equipos ev ON p.equipoVisitante = ev.idEquipo " +
+          "JOIN etapas et ON p.idEtapa = et.idEtapa " +
+          "JOIN estadios es ON p.idEstadio = es.idEstadio " +
+          "WHERE p.finalizado = 0 AND p.fechaHora <= NOW() " +
+          "ORDER BY p.fechaHora ASC";
+
   //Como vuelvo a traer los mismos elementos la consulta es similar.
   private static final String SQL_GETBYID =
       "SELECT p.*, " +
@@ -120,6 +134,64 @@ public class PartidoDAO implements AdmConexion, DAO<Partido, Integer> {
       conn.close();
     } catch (SQLException e) {
       System.out.println("Error al obtener todos los partidos.");
+      throw new RuntimeException(e);
+    }
+    return lista;
+  }
+
+  // Devuelve la lista de partidos disponibles para cargar resultado (no finalizados y fecha <= ahora)
+  public List<Partido> getAvailableForResultados() {
+    conn = obtenerConexion();
+    PreparedStatement pst = null;
+    ResultSet rs = null;
+    List<Partido> lista = new ArrayList<>();
+
+    try {
+      pst = conn.prepareStatement(SQL_GET_AVAILABLE_FOR_RESULT);
+      rs = pst.executeQuery();
+
+      while (rs.next()) {
+        Equipo local = new Equipo();
+        local.setIdEquipo(rs.getInt("equipoLocal"));
+        local.setNombre(rs.getString("local_nombre"));
+        local.setIcono(rs.getString("local_icono"));
+        local.setGrupo(rs.getString("local_grupo"));
+
+        Equipo visitante = new Equipo();
+        visitante.setIdEquipo(rs.getInt("equipoVisitante"));
+        visitante.setNombre(rs.getString("visitante_nombre"));
+        visitante.setIcono(rs.getString("visitante_icono"));
+        visitante.setGrupo(rs.getString("visitante_grupo"));
+
+        Etapa etapa = new Etapa();
+        etapa.setIdEtapa(rs.getInt("idEtapa"));
+        etapa.setNombreEtapa(rs.getString("nombreEtapa"));
+
+        Estadio estadio = new Estadio();
+        estadio.setIdEstadio(rs.getInt("idEstadio"));
+        estadio.setEstadio(rs.getString("estadio_nombre"));
+        estadio.setCiudad(rs.getString("ciudad"));
+        estadio.setPais(rs.getString("pais"));
+
+        Partido partido = new Partido();
+        partido.setIdPartido(rs.getInt("idPartido"));
+        partido.setEquipoLocal(local);
+        partido.setEquipoVisitante(visitante);
+        partido.setEtapa(etapa);
+        partido.setEstadio(estadio);
+        partido.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
+        partido.setGolesLocal(rs.getInt("golesLocal"));
+        partido.setGolesVisitante(rs.getInt("golesVisitante"));
+        partido.setFinalizado(rs.getBoolean("finalizado"));
+
+        lista.add(partido);
+      }
+
+      pst.close();
+      rs.close();
+      conn.close();
+    } catch (SQLException e) {
+      System.out.println("Error al obtener partidos disponibles para resultados.");
       throw new RuntimeException(e);
     }
     return lista;

@@ -1,13 +1,34 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ include file="header.jsp" %>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- 1.CONTENIDO PRINCIPAL -->
     <main>
-      <section class="hero-inicio mb-4">
-        <h1 class="fw-bold">¡BIENVENIDO!</h1>
-        <div class="countdown-box my-3">38 DÍAS</div>
-        <p class="small text-uppercase fw-bold">Para el mundial</p>
-      </section>
+      <div class="countdown-section text-center my-5">
+
+          <h1 class="countdown-title text-uppercase mb-4">
+              ¡BIENVENIDO!
+          </h1>
+
+          <div class="countdown-board shadow-lg">
+              <div class="countdown-inner">
+                  <div id="countdown-reloj" class="countdown-timer font-monospace">
+                      00:00:00:00
+                  </div>
+
+                  <div class="countdown-labels text-uppercase fw-bold mt-2">
+                      <span>Días</span>
+                      <span>Horas</span>
+                      <span>Min</span>
+                      <span>Seg</span>
+                  </div>
+              </div>
+          </div>
+
+          <h3 class="countdown-subtitle text-uppercase fw-bold mt-4">
+              Para el Mundial
+          </h3>
+
+      </div>
 
       <div class="container pb-5">
 

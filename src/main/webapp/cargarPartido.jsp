@@ -1,17 +1,14 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.time.LocalDateTime" %>
 <%@ page import="java.time.format.DateTimeFormatter" %>
 <%@ page import="entities.Equipo" %>
-<%@ page import="entities.Estadio" %>
-<%@ page import="entities.Etapa" %>
+<%@ page import="entities.Partido" %>
 <%@ include file="header.jsp" %>
 
 <%
   List<Equipo> equipos = (List<Equipo>) request.getAttribute("equipos");
-  List<Etapa> etapas = (List<Etapa>) request.getAttribute("etapas");
-  List<Estadio> estadios = (List<Estadio>) request.getAttribute("estadios");
-  String fechaHoraMinima = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+  List<Partido> partidosPendientes = (List<Partido>) request.getAttribute("partidosPendientes");
+  DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 %>
 
 <main class="container py-4 pb-5">
@@ -38,21 +35,20 @@
 
     <form action="cargar-partido" method="post" class="admin-form">
       <div class="row g-3">
-        <div class="col-12 col-md-6">
-          <label for="idEtapa" class="form-label">Etapa</label>
-          <select id="idEtapa" name="idEtapa" class="form-select" required>
-            <option value="">Seleccionar etapa</option>
-            <% if (etapas != null) {
-              for (Etapa etapa : etapas) { %>
-                <option value="<%= etapa.getIdEtapa() %>"><%= etapa.getNombreEtapa() %></option>
+        <div class="col-12">
+          <label for="idPartido" class="form-label">Partido pendiente</label>
+          <select id="idPartido" name="idPartido" class="form-select" required>
+            <option value="">Seleccionar partido</option>
+            <% if (partidosPendientes != null) {
+              for (Partido partido : partidosPendientes) { %>
+                <option value="<%= partido.getIdPartido() %>">
+                  <%= partido.getEtapa().getNombreEtapa() %> -
+                  <%= partido.getFechaHora().format(formatoFecha) %> -
+                  <%= partido.getEstadio().getEstadio() %>
+                </option>
             <% }
             } %>
           </select>
-        </div>
-
-        <div class="col-12 col-md-6">
-          <label for="fechaHora" class="form-label">Fecha y hora</label>
-          <input id="fechaHora" name="fechaHora" type="datetime-local" class="form-control" min="<%= fechaHoraMinima %>" required>
         </div>
 
         <div class="col-12 col-md-6">
@@ -74,20 +70,6 @@
             <% if (equipos != null) {
               for (Equipo equipo : equipos) { %>
                 <option value="<%= equipo.getIdEquipo() %>"><%= equipo.getNombre() %></option>
-            <% }
-            } %>
-          </select>
-        </div>
-
-        <div class="col-12">
-          <label for="idEstadio" class="form-label">Estadio</label>
-          <select id="idEstadio" name="idEstadio" class="form-select" required>
-            <option value="">Seleccionar estadio</option>
-            <% if (estadios != null) {
-              for (Estadio estadio : estadios) { %>
-                <option value="<%= estadio.getIdEstadio() %>">
-                  <%= estadio.getEstadio() %> - <%= estadio.getCiudad() %>, <%= estadio.getPais() %>
-                </option>
             <% }
             } %>
           </select>

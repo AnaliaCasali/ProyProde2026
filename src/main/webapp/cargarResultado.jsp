@@ -1,9 +1,10 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page isELIgnored="false" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <%@ include file="header.jsp" %>
 
-
-
- <main>
+ <main style="padding-top: 30px;">
    <div class="container">
      <h3>Cargar resultado</h3>
 
@@ -47,6 +48,5 @@
      </form>
    </div>
  </main>
-
 
 <%@ include file="footer.jsp" %>

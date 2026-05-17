@@ -214,5 +214,6 @@ public class JugadaServlet extends HttpServlet {
 
     // Al terminar el POST, invocamos directo al GET pasándole el request con el ordenamiento por fecha intacto
     doGet(request, response);
+    //correcto
   }
 }

@@ -1,487 +1,712 @@
+/* =================================================================================== */
+/* GLOBAL: IMPORTACIONES, VARIABLES DE IDENTIDAD Y CUERPO PRINCIPAL                    */
+/* =================================================================================== */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap");
 
 :root {
-  --afa-celeste: #74acdf;
-  --afa-blanco: #ffffff;
-  --afa-amarillo: #f1b32d;
-  --afa-azul-oscuro: #1b365d;
-  --bg-principal: #e9ecef;
+    --afa-celeste: #74acdf;
+    --afa-blanco: #ffffff;
+    --afa-amarillo: #f1b32d;
+    --afa-azul-oscuro: #1b365d;
+    --bg-principal: #e9ecef;
 }
 
 body {
-  font-family: "Montserrat", sans-serif;
-  background-color: var(--bg-principal) !important;
-  color: #2c3e50;
-  margin: 0;
-  /* Espacio extra abajo en mobile para que la nav no tape el contenido */
-  padding-bottom: 80px;
+    font-family: "Montserrat", sans-serif;
+    background-color: var(--bg-principal) !important;
+    color: #2c3e50;
+    margin: 0;
+    /* Espacio extra abajo en mobile para que la nav no tape el contenido */
+    padding-bottom: 80px;
 }
 
 /* En PC quitamos el padding del body */
 @media (min-width: 992px) {
-  body {
-    padding-bottom: 0;
-  }
+    body {
+        padding-bottom: 0;
+    }
 }
 
-/* --- HEADER --- */
+/* =================================================================================== */
+/* COMPONENTE: NAVBAR Y CABECERA (LOGOS Y ALINEACIÓN)                                  */
+/* =================================================================================== */
 .navbar-afa {
-  background-color: var(--afa-azul-oscuro) !important;
-  min-height: 70px;
+    background-color: var(--afa-azul-oscuro) !important;
+    min-height: 70px;
 }
 
 .logo-fifa {
-  height: 45px;
-  filter: brightness(0) invert(1); /* Lo hace blanco para que resalte */
+    height: 45px;
+    filter: brightness(0) invert(1); /* Lo hace blanco para que resalte */
 }
 
 .logo-afa {
-  height: 40px;
-  margin-left: 10px;
+    height: 40px;
+    margin-left: 10px;
 }
 
 /* Alineación dinámica del Header */
 @media (min-width: 992px) {
-  .navbar-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-  }
+    .navbar-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
 
-  .navbar-brand-center {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-  }
+    .navbar-brand-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+    }
 
-  .navbar-toggler {
-    order: 3; /* Botón hamburguesa a la derecha en PC */
-  }
+    .navbar-toggler {
+        order: 3; /* Botón hamburguesa a la derecha en PC */
+    }
 }
 
-/* --- NAVEGACIÓN MOBILE (TAB BAR) --- */
+/* =================================================================================== */
+/* COMPONENTE: NAVEGACIÓN MÓVIL (TAB BAR INFERIOR)                                      */
+/* =================================================================================== */
 .mobile-nav {
-  display: none; /* Oculto en PC */
+    display: none; /* Oculto en PC */
 }
 
 @media (max-width: 991px) {
-  .navbar-toggler {
-    display: none !important; /* Desaparece hamburguesa en mobile */
-  }
+    .navbar-toggler {
+        display: none !important; /* Desaparece hamburguesa en mobile */
+    }
 
-  .mobile-nav {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: var(--afa-blanco);
-    justify-content: space-around;
-    padding: 10px 0;
-    border-top: 2px solid var(--afa-celeste);
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1030;
-  }
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: var(--afa-blanco);
+        justify-content: space-around;
+        padding: 10px 0;
+        border-top: 2px solid var(--afa-celeste);
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1030;
+    }
 
-  .mobile-nav a {
-    text-decoration: none;
-    color: #888;
-    font-size: 0.65rem;
-    text-align: center;
-    font-weight: 600;
-  }
+    .mobile-nav a {
+        text-decoration: none;
+        color: #888;
+        font-size: 0.65rem;
+        text-align: center;
+        font-weight: 600;
+    }
 
-  .mobile-nav a.active {
-    color: var(--afa-azul-oscuro);
-  }
+    .mobile-nav a.active {
+        color: var(--afa-azul-oscuro);
+    }
 
-  .mobile-nav i {
-    display: block;
-    font-size: 1.5rem;
-    margin-bottom: 2px;
-  }
+    .mobile-nav i {
+        display: block;
+        font-size: 1.5rem;
+        margin-bottom: 2px;
+    }
 }
 
-/* --- CAPSULAS --- */
+/* =================================================================================== */
+/* COMPONENTE: CONTENEDORES BASE (CÁPSULAS GENERALES Y SECCIONES DE BIENVENIDA)        */
+/* =================================================================================== */
 .capsula-prode {
-  background-color: var(--afa-blanco);
-  border-radius: 50px;
-  border: 1px solid rgba(116, 172, 223, 0.4);
-  padding: 15px 25px;
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    background-color: var(--afa-blanco);
+    border-radius: 50px;
+    border: 1px solid rgba(116, 172, 223, 0.4);
+    padding: 15px 25px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .equipo {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .versus {
-  flex: 1;
-  text-align: center;
+    flex: 1;
+    text-align: center;
 }
 
-/* --- BIENVENIDA --- */
 .hero-inicio {
-  background: linear-gradient(
-    180deg,
-    var(--afa-celeste) 0%,
-    var(--bg-principal) 100%
-  );
-  padding: 40px 15px;
-  text-align: center;
-  border-radius: 0 0 40px 40px;
+    background: linear-gradient(
+            180deg,
+            var(--afa-celeste) 0%,
+            var(--bg-principal) 100%
+    );
+    padding: 40px 15px;
+    text-align: center;
+    border-radius: 0 0 40px 40px;
 }
 
 .countdown-box {
-  background-color: var(--afa-azul-oscuro);
-  color: var(--afa-amarillo);
-  padding: 10px 30px;
-  border-radius: 15px;
-  display: inline-block;
-  font-weight: 700;
-  font-size: 1.5rem;
+    background-color: var(--afa-azul-oscuro);
+    color: var(--afa-amarillo);
+    padding: 15px 20px;
+    border-radius: 20px;
+    display: block;
+    font-weight: 700;
 }
 
-/* --- BOTONES --- */
 .btn-afa {
-  background-color: var(--afa-amarillo) !important;
-  color: var(--afa-azul-oscuro) !important;
-  font-weight: bold;
-  border-radius: 50px;
-  padding: 10px 30px;
-}
-
-/* --- ESTILOS PARA EL RANKING EN INICIO --- */
-.puesto-1 {
-  border-left: 5px solid #ffd700 !important;
-} /* Oro */
-.puesto-2 {
-  border-left: 5px solid #c0c0c0 !important;
-} /* Plata */
-.puesto-3 {
-  border-left: 5px solid #cd7f32 !important;
-} /* Bronce */
-
-.puntos-badge {
-  background-color: var(--afa-azul-oscuro);
-  color: var(--afa-amarillo);
-  border-radius: 10px;
-  padding: 5px 12px;
-  font-weight: bold;
-}
-
-.nombre-usuario {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 120px; /* Ajustá este valor según qué tan largo querés el corte */
-  display: inline-block;
-  vertical-align: middle;
-}
-
-/* En PC le damos más aire al nombre */
-@media (min-width: 992px) {
-  .nombre-usuario {
-    max-width: 300px;
-  }
-}
-
-/*ESTILOS INFORMACION DE LA CUENTA*/
-
-.mainInformacionDeLaCuenta{
-   background: linear-gradient(180deg,var(--afa-celeste) 0%,var(--bg-principal) 100%);
-   font-family: "Montserrat", sans-serif;
-}
-
-.divInformacionDeLaCuenta{
-   display:flex;
-   align-items:center;
-   justify-content:center;
-   min-height: 80vh;
-}
-
-.btnCambiarContraseña{
-   text-decoration:none;
-   background-color:white;
-   color:black;
-   border:1px solid black;
-   border-radius:8px;
-   padding:10px 50px 10px 50px;
-   font-weight: bold;
-}
-
-/* ESTILOS CAMBIAR CONTRASEÑA*/
-.mainCambiarContraseña{
-   background: linear-gradient(180deg,var(--afa-celeste) 0%,var(--bg-principal) 100%);
-   display:flex;
-   align-items:center;
-   justify-content:center;
-   min-height: 80vh;
-}
-
-.formCambiarContraseña{
-    background:white;
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    border-radius:8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.btnActualizarContraseña{
-    background-color: var(--afa-amarillo);
-    color: var(--afa-azul-oscuro);
+    background-color: var(--afa-amarillo) !important;
+    color: var(--afa-azul-oscuro) !important;
     font-weight: bold;
-    border:0px;
     border-radius: 50px;
     padding: 10px 30px;
 }
 
-/* ========================= */
-/* COMO JUGAR */
-/* ========================= */
+/* =================================================================================== */
+/* COMPONENTE: VISTA DE RANKINGS DE USUARIOS                                           */
+/* =================================================================================== */
+.puesto-1 {
+    border-left: 5px solid #ffd700 !important;
+}
+
+/* Oro */
+.puesto-2 {
+    border-left: 5px solid #c0c0c0 !important;
+}
+
+/* Plata */
+.puesto-3 {
+    border-left: 5px solid #cd7f32 !important;
+}
+
+/* Bronce */
+
+.puntos-badge {
+    background-color: var(--afa-azul-oscuro);
+    color: var(--afa-amarillo);
+    border-radius: 10px;
+    padding: 5px 12px;
+    font-weight: bold;
+}
+
+.nombre-usuario {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 120px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+@media (min-width: 992px) {
+    .nombre-usuario {
+        max-width: 300px;
+    }
+}
+
+/* =================================================================================== */
+/* COMPONENTE: GESTIÓN DE CONFIGURACIÓN DE CUENTA DE USUARIO                           */
+/* =================================================================================== */
+.mainInformacionDeLaCuenta {
+    background: linear-gradient(180deg, var(--afa-celeste) 0%, var(--bg-principal) 100%);
+    font-family: "Montserrat", sans-serif;
+}
+
+.divInformacionDeLaCuenta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+.btnCambiarContraseña {
+    text-decoration: none;
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    border-radius: 8px;
+    padding: 10px 50px 10px 50px;
+    font-weight: bold;
+}
+
+.mainCambiarContraseña {
+    background: linear-gradient(180deg, var(--afa-celeste) 0%, var(--bg-principal) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+.formCambiarContraseña {
+    background: white;
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btnActualizarContraseña {
+    background-color: var(--afa-amarillo);
+    color: var(--afa-azul-oscuro);
+    font-weight: bold;
+    border: 0px;
+    border-radius: 50px;
+    padding: 10px 30px;
+}
+
+/* =================================================================================== */
+/* COMPONENTE: INSTRUCTIVOS Y REGLAMENTOS ("CÓMO JUGAR")                               */
+/* =================================================================================== */
 .card-como-jugar {
-  background-color: var(--afa-blanco);
-  border-radius: 25px;
-  padding: 30px 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  max-width: 850px;
-  margin: auto;
+    background-color: var(--afa-blanco);
+    border-radius: 25px;
+    padding: 30px 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    max-width: 850px;
+    margin: auto;
 }
 
 .titulo-seccion {
-  color: var(--afa-azul-oscuro);
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 10px;
+    color: var(--afa-azul-oscuro);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .subtitulo {
-  text-align: center;
-  color: #666;
-  margin-bottom: 30px;
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
 }
 
-/* ========================= */
-/* REGLAS */
-/* ========================= */
-
 .regla-box {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  background-color: #f8f9fa;
-  border-left: 5px solid var(--afa-celeste);
-  border-radius: 15px;
-  padding: 18px;
-  margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #f8f9fa;
+    border-left: 5px solid var(--afa-celeste);
+    border-radius: 15px;
+    padding: 18px;
+    margin-bottom: 18px;
 }
 
 .icono-regla {
-  font-size: 2rem;
-  color: var(--afa-azul-oscuro);
+    font-size: 2rem;
+    color: var(--afa-azul-oscuro);
 }
 
 .regla-box h3 {
-  margin-bottom: 5px;
-  color: var(--afa-azul-oscuro);
+    margin-bottom: 5px;
+    color: var(--afa-azul-oscuro);
 }
+
 .subtitulo {
-  text-align: center;              /* Centrado */
-  color: #003366;                  /* Azul oscuro (AFA) */
-  font-weight: 700;                /* Negrita (Bold) */
-  font-size: 1.2rem;               /* Un poco más grande */
-  letter-spacing: 1px;             /* Espacio entre letras moderno */
-  margin-bottom: 30px;             /* Espacio inferior */
-
+    text-align: center;
+    color: #003366;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
 }
-
-/* ========================= */
-/* CONTENEDOR DE EJEMPLOS */
-/* ========================= */
 
 .contenedor-ejemplos {
-  background-color: #f8f9fa;
-  border-radius: 20px;
-  padding: 20px;
-  margin-top: 20px;
+    background-color: #f8f9fa;
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 20px;
 }
 
 .ejemplo-item {
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 18px;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 18px;
 }
 
 .ejemplo-item:last-child {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .ejemplo-item h3 {
-  margin-bottom: 10px;
-  font-size: 1.1rem;
-  color: #222;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #222;
 }
 
 .ejemplo-item p {
-  margin-bottom: 5px;
+    margin-bottom: 5px;
 }
 
 .ejemplos-capsula {
-  /* Fondo: un azul*/
-  background-color: rgba(0, 123, 255, 0.1);
-
-  /* Borde: un azul sólido */
-  border: 2px solid #007bff;
-
-  /* Bordes redondeados */
-  border-radius: 20px;
-
-  /* Padding para que el contenido no toque los bordes */
-  padding: 15px;
+    background-color: rgba(0, 123, 255, 0.1);
+    border: 2px solid #007bff;
+    border-radius: 20px;
+    padding: 15px;
 }
-/* ========================= */
-/* COLORES DE RESULTADOS */
-/* ========================= */
 
+/* =================================================================================== */
+/* COMPONENTE: REGLAS DE COLORES PARA LOS ENCUENTROS EVALUADOS                         */
+/* =================================================================================== */
 .acierto-total {
-  background-color: rgba(40, 167, 69, 0.12);
-  border: 2px solid #28a745;
+    background-color: rgba(40, 167, 69, 0.12);
+    border: 2px solid #28a745;
 }
 
- .solo-resultado {
-  background-color: rgba(255, 193, 7, 0.15);
-  border: 2px solid #ffc107;
+.solo-resultado {
+    background-color: rgba(255, 193, 7, 0.15);
+    border: 2px solid #ffc107;
 }
 
-.acierto-parcial{
-  background-color: rgba(23, 162, 184, 0.12);
-  border: 2px solid #17a2b8;
+.acierto-parcial {
+    background-color: rgba(23, 162, 184, 0.12);
+    border: 2px solid #17a2b8;
 }
 
 .ningun-resultado {
-  background-color: #ffe5e9;
-  border: 2px solid #f5a3b3;
+    background-color: #ffe5e9;
+    border: 2px solid #f5a3b3;
 }
-
-/* ========================= */
-/* PUNTOS */
-/* ========================= */
 
 .puntos-box {
-  margin-top: 15px;
-  background-color: var(--afa-azul-oscuro);
-  color: var(--afa-amarillo);
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-weight: 700;
+    margin-top: 15px;
+    background-color: var(--afa-azul-oscuro);
+    color: var(--afa-amarillo);
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: 700;
 }
 
-/* ========================= */
-/* BOTON */
-/* ========================= */
-
 .btn-volver {
-  display: inline-block;
-  margin-top: 30px;
-  text-decoration: none;
-  background-color: var(--afa-amarillo);
-  color: var(--afa-azul-oscuro);
-  font-weight: 700;
-  padding: 12px 22px;
-  border-radius: 50px;
-  transition: 0.3s;
+    display: inline-block;
+    margin-top: 30px;
+    text-decoration: none;
+    background-color: var(--afa-amarillo);
+    color: var(--afa-azul-oscuro);
+    font-weight: 700;
+    padding: 12px 22px;
+    border-radius: 50px;
+    transition: 0.3s;
 }
 
 .btn-volver:hover {
-  transform: translateY(-2px);
+    transform: translateY(-2px);
 }
 
-/* ========================= */
-/* ADMIN - CARGA PARTIDOS */
-/* ========================= */
-
+/* =================================================================================== */
+/* COMPONENTE: PANEL DE ADMINISTRACIÓN (CARGA DE PARTIDOS)                             */
+/* =================================================================================== */
 .admin-panel {
-  background-color: var(--afa-blanco);
-  border: 1px solid rgba(116, 172, 223, 0.35);
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  margin: 0 auto;
-  max-width: 920px;
-  padding: 24px;
+    background-color: var(--afa-blanco);
+    border: 1px solid rgba(116, 172, 223, 0.35);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin: 0 auto;
+    max-width: 920px;
+    padding: 24px;
 }
 
 .admin-panel-header {
-  align-items: flex-start;
-  border-bottom: 1px solid #dee2e6;
-  display: flex;
-  gap: 16px;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
+    align-items: flex-start;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
 }
 
 .admin-panel-header h1 {
-  color: var(--afa-azul-oscuro);
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin: 0;
+    color: var(--afa-azul-oscuro);
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin: 0;
 }
 
 .admin-eyebrow {
-  color: #667085;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  margin-bottom: 4px;
-  text-transform: uppercase;
+    color: #667085;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    margin-bottom: 4px;
+    text-transform: uppercase;
 }
 
 .admin-badge {
-  background-color: var(--afa-azul-oscuro);
-  border-radius: 8px;
-  color: var(--afa-amarillo);
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 8px 10px;
-  white-space: nowrap;
+    background-color: var(--afa-azul-oscuro);
+    border-radius: 8px;
+    color: var(--afa-amarillo);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 8px 10px;
+    white-space: nowrap;
 }
 
 .admin-form .form-label {
-  color: var(--afa-azul-oscuro);
-  font-weight: 700;
+    color: var(--afa-azul-oscuro);
+    font-weight: 700;
 }
 
 .admin-actions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
 }
 
 @media (max-width: 576px) {
-  .admin-panel {
-    padding: 18px;
-  }
+    .admin-panel {
+        padding: 18px;
+    }
 
-  .admin-panel-header {
+    .admin-panel-header {
+        display: block;
+    }
+
+    .admin-badge {
+        display: inline-block;
+        margin-top: 12px;
+    }
+
+    .admin-actions .btn {
+        width: 100%;
+    }
+}
+
+/* =================================================================================== */
+/* JUGAR.JSP (INTERFAZ COMPLETA DEL PRONÓSTICO DEL USUARIO)                            */
+/* =================================================================================== */
+
+/* --- 1. FILTRO DE JORNADAS (Control estructural móvil y escritorio) --- */
+.contenedor-filtro-jornada {
     display: block;
-  }
-
-  .admin-badge {
-    display: inline-block;
-    margin-top: 12px;
-  }
-
-  .admin-actions .btn {
     width: 100%;
-  }
+    margin-bottom: 3rem;
+}
+
+.capsula-filtro {
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 15px;
+    border-radius: 20px;
+}
+
+.formulario-filtro {
+    display: block;
+    width: 100%;
+}
+
+.selector-jornada {
+    border-radius: 50px !important;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.btn-filtrar-prode {
+    background-color: var(--afa-amarillo) !important;
+    color: var(--afa-azul-oscuro) !important;
+    font-weight: bold;
+    border-radius: 50px !important;
+    padding: 10px 20px;
+    border: none;
+    width: 100%;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-filtrar-prode:hover {
+    background-color: #e0a320 !important;
+}
+
+/* --- 2. CABECERA Y METADATA DE LA INTERFAZ --- */
+.header-prode-titulo {
+    color: var(--afa-azul-oscuro);
+}
+
+.alerta-mensajes {
+    max-width: 650px;
+}
+
+.contenedor-fecha-titulo {
+    border-bottom: 2px solid #dee2e6;
+}
+
+/* --- 3. TARJETAS DE PARTIDOS (GRILLA Y DETALLES DE EQUIPOS) --- */
+.etiqueta-bloqueo {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+}
+
+.etiqueta-finalizado {
+    background-color: #28a745 !important;
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+}
+
+.etiqueta-etapa {
+    background-color: var(--afa-azul-oscuro);
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+}
+
+.contenedor-equipos-marcador {
+    min-height: 85px;
+}
+
+.equipo-tarjeta-prode {
+    width: 30% !important;
+}
+
+.contenedor-bandera-prode {
+    width: 50px;
+    height: 35px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+.bandera-prode-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nombre-equipo-prode {
+    color: #333;
+    font-size: 0.75rem;
+}
+
+/* --- 4. ENTRADA DE DATOS (INPUTS DE GOLES Y MARCADORES) --- */
+.input-goles-prode {
+    width: 50px !important;
+    height: 42px !important;
+    border-radius: 8px;
+    border: 2px solid #ced4da;
+    font-size: 1.2rem !important;
+    padding: 0 !important;
+}
+
+.input-prode-bloqueado {
+    background-color: #e9ecef !important;
+    color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.separador-goles {
+    font-size: 1rem;
+}
+
+.hora-partido-prode {
+    font-size: 0.6rem;
+    letter-spacing: 0.5px;
+}
+
+.footer-tarjeta-prode {
+    font-size: 0.68rem;
+    color: #7f8c8d;
+}
+
+.contenedor-btn-guardar {
+    padding-bottom: 60px;
+}
+
+/* --- 5. RESULTADOS OFICIALES Y HISTORIAL DE PUNTOS POR JUGADA --- */
+.contenedor-resultado-oficial-prode {
+    display: block;
+}
+
+.marcador-oficial-badge {
+    font-size: 0.65rem !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+}
+
+.puntos-ganados-partido {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+/* Estados dinámicos de los textos de puntaje */
+.puntos-ganados-partido.text-success {
+    color: #28a745 !important; /* Verde para destacar los puntos sumados exitosamente */
+}
+
+.puntos-ganados-partido.text-muted {
+    color: #6c757d !important; /* Gris intermedio para los no jugados */
+}
+
+/* --- 6. MARCADOR FLOTANTE FIJO (MIS PUNTOS GENERALES) --- */
+.marcador-puntos-flotante {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 1040;
+    transition: transform 0.2s ease;
+}
+
+.marcador-puntos-flotante:hover {
+    transform: scale(1.05);
+}
+
+.badge-flotante-capsula {
+    border-radius: 30px !important;
+    background-color: var(--afa-azul-oscuro);
+    color: var(--afa-blanco);
+}
+
+.subtext-puntos {
+    font-size: 0.55rem;
+    color: var(--afa-celeste);
+    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.numeracion-puntos {
+    line-height: 1.1;
+}
+
+/* --- 7. RESPONSIVE MEDIA QUERIES (COMPORTAMIENTO SELECCIONES DINÁMICAS) --- */
+
+/* ALINEACIÓN FORMULARIO FILTRO EN HORIZONTAL (PC / TABLETS) */
+@media (min-width: 576px) {
+    .formulario-filtro {
+        display: table;
+        border-collapse: separate;
+        border-spacing: 10px 0;
+    }
+
+    .input-grupo-filtro {
+        display: table-cell;
+        vertical-align: middle;
+        width: 65%;
+    }
+
+    .btn-grupo-filtro {
+        display: table-cell;
+        vertical-align: middle;
+        width: 35%;
+    }
+
+    .selector-jornada {
+        margin-bottom: 0;
+    }
+}
+
+/* CENTRADO FLOTANTE DE PUNTOS EN LA PARTE INFERIOR (MOBILE) */
+@media (max-width: 991px) {
+    .marcador-puntos-flotante {
+        right: 50%;
+        transform: translateX(50%);
+        bottom: 90px;
+    }
+
+    .marcador-puntos-flotante:hover {
+        transform: translateX(50%) scale(1.05);
+    }
 }

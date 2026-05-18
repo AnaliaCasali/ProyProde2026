@@ -1,6 +1,7 @@
 package servlets;
 
 import dao.JugadaDAO;
+import dao.PartidoDAO; // <-- Importamos el DAO de partidos
 import entities.Etapa;
 import entities.Jugada;
 import entities.Partido;
@@ -15,16 +16,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @WebServlet("/jugar")
 public class JugadaServlet extends HttpServlet {
 
   private JugadaDAO jugadaDAO = new JugadaDAO();
+  private PartidoDAO partidoDAO = new PartidoDAO(); // <-- Instanciamos el DAO de tu colega
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -36,12 +35,12 @@ public class JugadaServlet extends HttpServlet {
     }
 
     try {
-      // 1. Carga de Puntos Históricos Totales (para el badge azul)
+      // 1. Carga de Puntos Históricos Totales
       int puntosTotales = jugadaDAO.getPuntosTotalesPorUsuario(usuarioLogueado.getIdUsuario());
       request.setAttribute("puntosTotales", puntosTotales);
 
-      // 2. Agrupamiento de jornadas por fecha (TU LÓGICA ORIGINAL)
-      List<Partido> todosLosPartidos = jugadaDAO.getAllPartidos();
+      // 2. Agrupamiento de jornadas por fecha (Cambiado para usar el DAO correcto)
+      List<Partido> todosLosPartidos = partidoDAO.getAll();
 
       Map<LocalDate, List<Partido>> jornadasPorFecha = todosLosPartidos.stream()
           .collect(Collectors.groupingBy(
@@ -52,7 +51,7 @@ public class JugadaServlet extends HttpServlet {
 
       List<LocalDate> fechasDisponibles = new ArrayList<>(jornadasPorFecha.keySet());
 
-      // 3. Determinar Jornada a mostrar (Buscamos tanto el filtro por GET como el oculto del formulario)
+      // 3. Determinar Jornada a mostrar
       String jParam = request.getParameter("jornada");
       if (jParam == null || jParam.isEmpty()) {
         jParam = request.getParameter("jornadaActual");
@@ -69,8 +68,18 @@ public class JugadaServlet extends HttpServlet {
         // Sacamos el ID de la etapa real del primer partido de esa lista
         int idEtapaReal = partidosHoy.get(0).getEtapa().getIdEtapa();
 
-        // Pedimos las jugadas usando el ID real de la base de datos
-        List<Jugada> listaJugadas = jugadaDAO.getByEtapa(usuarioLogueado.getIdUsuario(), idEtapaReal);
+        // 1. Traemos el pool completo de jugadas de la etapa (fase de grupos completa)
+        List<Jugada> jugadasDeLaEtapa = jugadaDAO.getByEtapa(usuarioLogueado.getIdUsuario(), idEtapaReal);
+
+        // 2. Armamos un Set rápido con los IDs de los partidos que corresponden a HOY
+        Set<Integer> idsPartidosDeHoy = partidosHoy.stream()
+            .map(Partido::getIdPartido)
+            .collect(Collectors.toSet());
+
+        // 3. FILTRADO: Dejamos en 'listaJugadas' únicamente las que correspondan a la fecha actual
+        List<Jugada> listaJugadas = jugadasDeLaEtapa.stream()
+            .filter(j -> idsPartidosDeHoy.contains(j.getPartido().getIdPartido()))
+            .collect(Collectors.toList());
 
         // Sumamos los puntos específicos que el usuario ganó SOLO en esta jornada
         int puntosDeLaJornada = listaJugadas.stream()
@@ -90,7 +99,7 @@ public class JugadaServlet extends HttpServlet {
         request.setAttribute("mapaJugadas", mapaJugadas);
         request.setAttribute("listaJugadas", listaJugadas);
         request.setAttribute("puntosJornada", puntosDeLaJornada);
-        request.setAttribute("jornadaSeleccionada", index + 1);   // El número de la vista (Ej: "Jornada 2")
+        request.setAttribute("jornadaSeleccionada", index + 1);
         request.setAttribute("totalJornadas", fechasDisponibles.size());
         request.setAttribute("fechaActualLabel", fechaSeleccionada);
       }
@@ -119,8 +128,8 @@ public class JugadaServlet extends HttpServlet {
     int jornadaActual = (jornadaActualStr != null && !jornadaActualStr.isEmpty()) ? Integer.parseInt(jornadaActualStr) : 1;
 
     try {
-      // Conseguimos el ID relacional de la etapa usando el truco de la fecha
-      List<Partido> todosLosPartidos = jugadaDAO.getAllPartidos();
+      // Conseguimos el ID relacional de la etapa usando el truco de la fecha (Cambiado para usar partidoDAO)
+      List<Partido> todosLosPartidos = partidoDAO.getAll();
       Map<LocalDate, List<Partido>> jornadasPorFecha = todosLosPartidos.stream()
           .collect(Collectors.groupingBy(p -> p.getFechaHora().toLocalDate(), TreeMap::new, Collectors.toList()));
       List<LocalDate> fechasDisponibles = new ArrayList<>(jornadasPorFecha.keySet());
@@ -162,9 +171,13 @@ public class JugadaServlet extends HttpServlet {
 
           boolean partidoYaEmpezoOLlegoLimite = ahora.isAfter(partidoInfo.getFechaHora().minusMinutes(15));
 
+          // Corregido para mapear directo con la propiedad real de Partido.java (isFinalizado)
           if (partidoInfo.isFinalizado() || partidoYaEmpezoOLlegoLimite) {
             continue;
           }
+
+          String strGolesLForm = request.getParameter("golesL_" + idPartido);
+          String strGolesVForm = request.getParameter("golesV_" + idPartido);
 
           Jugada jugadaExistente = jugadaDAO.getByUserAndMatch(usuarioLogueado.getIdUsuario(), idPartido);
 
@@ -176,12 +189,8 @@ public class JugadaServlet extends HttpServlet {
               pronosticosGuardados++;
             }
           } else {
-            // === ACÁ ESTABA EL ERROR CONCEPTUAL ===
             Jugada nueva = new Jugada();
             nueva.setUsuario(usuarioLogueado);
-
-            // Pasamos el partidoInfo completo (el que viene con su Etapa mapeada de la DB)
-            // para que no quede flotando en null ni se rompan los mapas de JSTL al refrescar
             nueva.setPartido(partidoInfo);
             nueva.setGolesLocal(golesLocal);
             nueva.setGolesVisitante(golesVisitante);
@@ -197,7 +206,6 @@ public class JugadaServlet extends HttpServlet {
         }
       }
 
-      // Seteamos los mensajes directo en el request
       if (pronosticosGuardados > 0) {
         request.setAttribute("mensaje", "¡Se guardaron " + pronosticosGuardados + " pronósticos correctamente!");
       } else if (errores.isEmpty()) {
@@ -212,8 +220,6 @@ public class JugadaServlet extends HttpServlet {
       request.setAttribute("error", "Error general en el guardado: " + e.getMessage());
     }
 
-    // Al terminar el POST, invocamos directo al GET pasándole el request con el ordenamiento por fecha intacto
     doGet(request, response);
-    //correcto
   }
 }

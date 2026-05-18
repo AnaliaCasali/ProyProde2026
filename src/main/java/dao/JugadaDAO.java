@@ -43,7 +43,7 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
   private static final String SQL_GET_BY_ETAPA =
       SQL_GETALL + " WHERE j.idUsuario = ? AND p.idEtapa = ?";
 
-  // --- MÉTODO AUXILIAR DE MAPEO  ---
+  // --- MÉTODO AUXILIAR DE MAPEO ---
   private Jugada mapearJugada(ResultSet rs) throws SQLException {
     Jugada j = new Jugada();
     j.setIdJugada(rs.getInt("idJugada"));
@@ -240,117 +240,5 @@ public class JugadaDAO implements DAO<Jugada, Integer>, AdmConexion {
       throw new JugadaException("Error al filtrar jugadas por etapa", e);
     }
     return listaPorEtapa;
-  }
-
-
-  public List<Partido> getPartidosByJornada(int nroJornada) {
-    List<Partido> lista = new ArrayList<>();
-    String sql = "SELECT p.idPartido, p.idEtapa, p.fechaHora, " +
-        "el.idEquipo AS idLocal, el.nombre AS nombreLocal, el.icono AS iconoLocal, " +
-        "ev.idEquipo AS idVisitante, ev.nombre AS nombreVisitante, ev.icono AS iconoVisitante, " +
-        "est.estadio, est.pais " +
-        "FROM Partidos p " +
-        "INNER JOIN Equipos el ON p.equipoLocal = el.idEquipo " +
-        "INNER JOIN Equipos ev ON p.equipoVisitante = ev.idEquipo " +
-        "LEFT JOIN Estadios est ON p.idEstadio = est.idEstadio " +
-        "WHERE p.idEtapa = ? " +
-        "ORDER BY p.fechaHora ASC";
-
-    try (Connection conn = obtenerConexion();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-
-      ps.setInt(1, nroJornada);
-
-      try (ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-          Partido p = new Partido();
-          p.setIdPartido(rs.getInt("idPartido"));
-          p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
-
-          Etapa e = new Etapa();
-          e.setIdEtapa(rs.getInt("idEtapa"));
-          p.setEtapa(e);
-
-          Equipo loc = new Equipo();
-          loc.setIdEquipo(rs.getInt("idLocal"));
-          loc.setNombre(rs.getString("nombreLocal"));
-          loc.setIcono(rs.getString("iconoLocal"));
-          p.setEquipoLocal(loc);
-
-          Equipo vis = new Equipo();
-          vis.setIdEquipo(rs.getInt("idVisitante"));
-          vis.setNombre(rs.getString("nombreVisitante"));
-          vis.setIcono(rs.getString("iconoVisitante"));
-          p.setEquipoVisitante(vis);
-
-          Estadio estadio = new Estadio();
-          estadio.setEstadio(rs.getString("estadio"));
-          estadio.setPais(rs.getString("pais"));
-          p.setEstadio(estadio);
-
-          lista.add(p);
-        }
-      }
-    } catch (SQLException e) {
-      throw new JugadaException("Error al filtrar partidos por idEtapa: " + nroJornada, e);
-    }
-    return lista;
-  }
-
-  public List<Partido> getAllPartidos() {
-    List<Partido> lista = new ArrayList<>();
-    String sql = "SELECT p.idPartido, p.idEtapa, p.fechaHora, " +
-        "el.idEquipo AS idLocal, el.nombre AS nombreLocal, el.icono AS iconoLocal, " +
-        "ev.idEquipo AS idVisitante, ev.nombre AS nombreVisitante, ev.icono AS iconoVisitante, " +
-        "est.estadio, est.pais " +
-        "FROM Partidos p " +
-        "INNER JOIN Equipos el ON p.equipoLocal = el.idEquipo " +
-        "INNER JOIN Equipos ev ON p.equipoVisitante = ev.idEquipo " +
-        "LEFT JOIN Estadios est ON p.idEstadio = est.idEstadio " +
-        "ORDER BY p.fechaHora ASC";
-
-    try (Connection conn = obtenerConexion();
-         PreparedStatement ps = conn.prepareStatement(sql);
-         ResultSet rs = ps.executeQuery()) {
-
-      while (rs.next()) {
-        Partido p = new Partido();
-        p.setIdPartido(rs.getInt("idPartido"));
-
-        // Seteamos la Etapa por si la necesitamos
-        Etapa e = new Etapa();
-        e.setIdEtapa(rs.getInt("idEtapa"));
-        p.setEtapa(e);
-
-        if (rs.getTimestamp("fechaHora") != null) {
-          p.setFechaHora(rs.getTimestamp("fechaHora").toLocalDateTime());
-        }
-
-        // Mapeo Equipo Local
-        Equipo loc = new Equipo();
-        loc.setIdEquipo(rs.getInt("idLocal"));
-        loc.setNombre(rs.getString("nombreLocal"));
-        loc.setIcono(rs.getString("iconoLocal"));
-        p.setEquipoLocal(loc);
-
-        // Mapeo Equipo Visitante
-        Equipo vis = new Equipo();
-        vis.setIdEquipo(rs.getInt("idVisitante"));
-        vis.setNombre(rs.getString("nombreVisitante"));
-        vis.setIcono(rs.getString("iconoVisitante"));
-        p.setEquipoVisitante(vis);
-
-        // Mapeo Estadio
-        Estadio estadio = new Estadio();
-        estadio.setEstadio(rs.getString("estadio"));
-        estadio.setPais(rs.getString("pais"));
-        p.setEstadio(estadio);
-
-        lista.add(p);
-      }
-    } catch (SQLException e) {
-      throw new RuntimeException("Error al recuperar todos los partidos con sus estadios", e);
-    }
-    return lista;
   }
 }

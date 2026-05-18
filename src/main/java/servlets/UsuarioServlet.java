@@ -80,25 +80,6 @@ public class UsuarioServlet extends HttpServlet {
     if (operacion.equals("actualizarPassword")) {
       HttpSession session = req.getSession();
 
-            /*prueba cambiar contraseña
-            if(session.getAttribute("usuario") == null) {
-
-                Usuario usuarioTest = new Usuario();
-
-                usuarioTest.setIdUsuario(1);
-
-                BCryptPasswordEncoder encoder =
-                        new BCryptPasswordEncoder();
-
-                // contraseña real: 12345678
-                usuarioTest.setPassword(
-                        encoder.encode("12345678")
-                );
-
-                session.setAttribute("usuario", usuarioTest);
-            }
-            fin prueba cambiar contraseña*/
-
       Usuario usuario = (Usuario) session.getAttribute("usuario");
 
       if (usuario == null) {

@@ -153,18 +153,19 @@
                 </div>
             </div>
 
-            <div class="text-center mt-5">
-                <button type="submit" class="btn btn-afa btn-lg px-5 py-3 shadow hover-zoom">
-                    <c:choose>
-                        <c:when test="${empty listaJugadas}">
-                            <i class="fas fa-save me-2"></i>GUARDAR PRONÓSTICOS
-                        </c:when>
-                        <c:otherwise>
-                            <i class="fas fa-edit me-2"></i>ACTUALIZAR CAMBIOS
-                        </c:otherwise>
-                    </c:choose>
-                </button>
-            </div>
+            <div class="text-center mt-5 mb-5">
+                            <button type="submit" class="btn btn-afa btn-lg px-5 py-3 shadow hover-zoom">
+                                <c:choose>
+                                    <%-- Ahora usamos la bandera específica de la fecha --%>
+                                    <c:when test="${not tieneJugadasEnEstaFecha}">
+                                        <i class="fas fa-save me-2"></i>GUARDAR PRONÓSTICOS
+                                    </c:when>
+                                    <c:otherwise>
+                                        <i class="fas fa-edit me-2"></i>ACTUALIZAR CAMBIOS
+                                    </c:otherwise>
+                                </c:choose>
+                            </button>
+                        </div>
         </form>
     </div>
 </main>

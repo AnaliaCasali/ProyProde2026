@@ -40,7 +40,7 @@ public class JugadaServlet extends HttpServlet {
       int puntosTotales = jugadaDAO.getPuntosTotalesPorUsuario(usuarioLogueado.getIdUsuario());
       request.setAttribute("puntosTotales", puntosTotales);
 
-      // 2. Agrupamiento de jornadas por fecha (TU LÓGICA ORIGINAL)
+      // 2. Agrupamiento de jornadas por fecha
       List<Partido> todosLosPartidos = jugadaDAO.getAllPartidos();
 
       Map<LocalDate, List<Partido>> jornadasPorFecha = todosLosPartidos.stream()
@@ -85,7 +85,12 @@ public class JugadaServlet extends HttpServlet {
                 (j1, j2) -> j1
             ));
 
+        // NUEVO FIX: Evaluamos si hay jugadas para la fecha seleccionada
+        boolean tieneJugadasEnEstaFecha = partidosHoy.stream()
+            .anyMatch(p -> mapaJugadas.containsKey(p.getIdPartido()));
+
         // Enviamos todo empaquetado al request para el JSP
+        request.setAttribute("tieneJugadasEnEstaFecha", tieneJugadasEnEstaFecha); // <-- ESTA ERA LA LÍNEA QUE FALTABA
         request.setAttribute("listaPartidosJornada", partidosHoy);
         request.setAttribute("mapaJugadas", mapaJugadas);
         request.setAttribute("listaJugadas", listaJugadas);
@@ -176,12 +181,10 @@ public class JugadaServlet extends HttpServlet {
               pronosticosGuardados++;
             }
           } else {
-            // === ACÁ ESTABA EL ERROR CONCEPTUAL ===
             Jugada nueva = new Jugada();
             nueva.setUsuario(usuarioLogueado);
 
-            // Pasamos el partidoInfo completo (el que viene con su Etapa mapeada de la DB)
-            // para que no quede flotando en null ni se rompan los mapas de JSTL al refrescar
+            // Pasamos el partidoInfo completo para que no quede flotando en null
             nueva.setPartido(partidoInfo);
             nueva.setGolesLocal(golesLocal);
             nueva.setGolesVisitante(golesVisitante);
@@ -212,8 +215,7 @@ public class JugadaServlet extends HttpServlet {
       request.setAttribute("error", "Error general en el guardado: " + e.getMessage());
     }
 
-    // Al terminar el POST, invocamos directo al GET pasándole el request con el ordenamiento por fecha intacto
+    // Al terminar el POST, invocamos directo al GET pasándole el request
     doGet(request, response);
-    //correcto
   }
 }
